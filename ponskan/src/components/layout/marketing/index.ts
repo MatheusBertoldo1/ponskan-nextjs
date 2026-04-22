@@ -1,0 +1,7 @@
+export * from './Footer'
+export * from './Header'
+export * from './Hero'
+export * from './Advantage'
+export * from './Devices'
+export * from './HowWorks'
+export * from './Questions'
