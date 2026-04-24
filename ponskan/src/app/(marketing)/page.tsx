@@ -1,12 +1,13 @@
-import { Hero, Devices, HowWorks, Advantage, Questions} from "@/components/layout/marketing"
+import { Hero, Devices, CTA, Team, Tecnologies, Questions} from "@/components/layout/marketing"
 
 export default function Home(){
     return(
         <>
         <Hero />
         <Devices />
-        <HowWorks />
-        <Advantage />
+        <Tecnologies />
+        <CTA />
+        <Team />
         <Questions />
         </>
     )

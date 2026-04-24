@@ -42,7 +42,7 @@ export default function RootLayout({children}: Readonly<{children: React.ReactNo
   return (
     <html
       lang="pt"
-      className={`${lexendSans.variable} ${interSans.variable} h-full antialiased`}
+      className={`${lexendSans.variable} ${interSans.variable} h-full antialiased scroll-smooth`}
     >
       <body className="min-h-full flex flex-col">{children}</body>
     </html>
