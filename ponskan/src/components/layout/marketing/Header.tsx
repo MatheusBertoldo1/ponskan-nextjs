@@ -10,7 +10,7 @@ export const Header = () => {
             </Link>
 
             <ul className="flex gap-6 w-fit mx-auto">
-                <li> <Link href="#home">Início</Link> </li>
+                <li> <Link href="#home" >Início</Link> </li>
                 <li> <Link href="#devices">Dispositivos</Link> </li>
                 <li> <Link href="#howWorks">Como funciona</Link> </li>
                 <li> <Link href="#advantage">Vantagens</Link> </li>
