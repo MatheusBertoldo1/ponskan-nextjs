@@ -3,13 +3,14 @@ import { DevicePhoneMobileIcon, CpuChipIcon, CloudArrowUpIcon, DocumentTextIcon,
 export const Tecnologies = () => {
     return(
         <>
-        <section id="tecnologies" className="flex flex-col w-full h-175 items-center py-22">
+        <section id="tecnologies" className="flex flex-col w-full items-center py-22 px-20">
             <h1 className="mb-2 text-4xl text-center text-slate-700 font-bold max-w-200">Enquanto a tecnologia protege a safra prospera</h1>
             <p className="mb-15 text-sm text-slate-600 font-light ">Entenda como nossa tecnologia vai beneficiar sua produção</p>
 
-            <div className="grid grid-cols-3 max-w-270 gap-y-10">
-                <div className="flex flex-col">
-                    <div className="w-fit h-fit px-1 py-1 mb-1 rounded-md bg-slate-600">
+            <div className="grid grid-cols-1 gap-5 md:grid-cols-2 lg:grid-cols-3 lg:max-w-270">
+
+                <div className="flex flex-col max-w-80 px-5 py-5 border-b border-slate-300 rounded-xl hover:bg-slate-200 md:border-none md:pb-0">
+                    <div className="w-fit px-1 py-1 mb-1 rounded-md bg-slate-600">
                         <DevicePhoneMobileIcon className="w-5 h-5 fill-slate-50"/>
                     </div>
                     <p className="mb-2 text-sm text-amber-500">Monitoramento em tempo real</p>
@@ -17,7 +18,7 @@ export const Tecnologies = () => {
                     <p className="text-sm text-slate-500">Monitoramento via dispositivos móveis, captação de imagens da planta infectada</p>
                 </div>
 
-                <div className="flex flex-col">
+                <div className="flex flex-col max-w-80 px-5 py-5 border-b border-slate-300 rounded-xl hover:bg-slate-200 md:border-none md:pb-0">
                     <div className="w-fit h-fit px-1 py-1 mb-1 rounded-md bg-slate-600">
                         <CpuChipIcon className="w-5 h-5 fill-slate-50"/>
                     </div>
@@ -26,7 +27,7 @@ export const Tecnologies = () => {
                     <p className="text-sm text-slate-500">Usamos o poder da inteligência artificial para entregar os melhores resultados</p>
                 </div>
 
-                <div className="flex flex-col">
+                <div className="flex flex-col max-w-80 px-5 py-5 border-b border-slate-300 rounded-xl hover:bg-slate-200 md:border-none md:pb-0">
                     <div className="w-fit h-fit px-1 py-1 mb-1 rounded-md bg-slate-600">
                         <CloudArrowUpIcon className="w-5 h-5 fill-slate-50"/>
                     </div>
@@ -36,7 +37,7 @@ export const Tecnologies = () => {
                 </div>
 
 
-                <div className="flex flex-col">
+                <div className="flex flex-col max-w-80 pb-10 border-b border-slate-300 md:border-none md:pb-0">
                     <div className="w-fit h-fit px-1 py-1 mb-1 rounded-md bg-slate-600">
                         <DocumentTextIcon className="w-5 h-5 fill-slate-50"/>
                     </div>
@@ -45,7 +46,7 @@ export const Tecnologies = () => {
                     <p className="text-sm text-slate-500">Suas decisões baseadas em todas as informações necessárias</p>
                 </div>
 
-                <div className="flex flex-col">
+                <div className="flex flex-col max-w-80 pb-10 border-b border-slate-300 md:border-none md:pb-0">
                     <div className="w-fit h-fit px-1 py-1 mb-1 rounded-md bg-slate-600">
                         <MapPinIcon className="w-5 h-5 fill-slate-50"/>
                     </div>
@@ -55,7 +56,7 @@ export const Tecnologies = () => {
                 </div>
 
 
-                <div className="flex flex-col">
+                <div className="flex flex-col max-w-80">
                     <div className="w-fit h-fit px-1 py-1 mb-1 rounded-md bg-slate-600">
                         <ArrowTrendingUpIcon className="w-5 h-5 fill-slate-50"/>
                     </div>

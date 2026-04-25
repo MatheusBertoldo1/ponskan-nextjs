@@ -3,11 +3,11 @@ import { ServerStackIcon, CheckBadgeIcon, AdjustmentsVerticalIcon, PuzzlePieceIc
 export const Team = () => {
     return(
         <>
-        <section id="team" className="flex flex-col w-full h-175 items-center py-22">
+        <section id="team" className="flex flex-col w-full items-center py-22 px-5">
             <h2 className="mb-2 text-4xl text-center text-slate-700 font-bold max-w-200">Nosso time de especialistas à sua disposição</h2>
             <p className="mb-15 text-sm text-slate-600 font-light">Uma equipe inteira para te atender da melhor forma</p>
 
-            <div className="flex max-w-270 gap-4">
+            <div className="flex max-w-270 gap-4 flex-wrap justify-center">
                 <div className="flex flex-col w-50 h-75 border border-slate-300 rounded-xl">
                     <div className="flex flex-col flex-1 px-4 py-4 border-b border-slate-300">
                         <div className="w-fit h-fit px-1 py-1 mb-1 rounded-md bg-slate-600">

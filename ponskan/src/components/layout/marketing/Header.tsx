@@ -4,15 +4,13 @@ import Link from "next/link"
 export const Header = () => {
     return (
         <>
-        <nav className='flex items-center w-full h-18 px-10 border-b border-gray-200'>
+        <nav className='flex items-center w-full h-18 pt-10 px-10'>
             <Link href="/">
                 <Logo className=" w-30"/>
             </Link>
 
             <ul className="flex gap-6 w-fit mx-auto text-slate-700">
-                <li> <Link href="#home" className="hover:text-amber-500 transition-colors">Início</Link> </li>
-                <li> <Link href="#devices" className="hover:text-amber-500 transition-colors">Dispositivos</Link> </li>
-                <li> <Link href="#tecnologies" className="hover:text-amber-500 transition-colors">Tecnologias</Link> </li>
+                <li> <Link href="#tecnologies" className="hover:text-amber-500 transition-colors">Tecnologia</Link> </li>
                 <li> <Link href="#team" className="hover:text-amber-500 transition-colors">Nosso time</Link> </li>
                 <li> <Link href="#questions" className="hover:text-amber-500 transition-colors">Perguntas frequentes</Link> </li>
             </ul>
