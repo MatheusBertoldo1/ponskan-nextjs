@@ -1,92 +1,76 @@
-import { ServerStackIcon, CheckBadgeIcon, AdjustmentsVerticalIcon, PuzzlePieceIcon, PencilSquareIcon} from "@heroicons/react/20/solid"
+import Image from "next/image"
+import { HeadlineSection } from "../elements/HeadlineSection"
 
 export const Team = () => {
+
+    const data = [
+        {
+            description: "Cuido da integridade e segurança dos dados da sua safra. Organizo as informações para que sejam a base sólida e confiável das suas decisões estratégicas.",
+            name: "Arthur Parra",
+            responsibility: "Gestor de banco de dados",
+            imgPath: "/images/arthurParra.webp"
+        },
+        {
+            description: "Realizo testes rigorosos para garantir que a plataforma seja impecável, confiável e livre de falhas para o seu dia a dia.",
+            name: "Daniele Fiel",
+            responsibility: "Quality Assurance",
+            imgPath: "/images/daniFiel.webp"
+        },
+        {
+            description: "Desenvolvo a inteligência do sistema. Foco em performance e estabilidade para garantir que a plataforma processe dados complexos com velocidade e segurança.",
+            name: "Guilherme Shimada",
+            responsibility: "Desenvolvedor Back-end",
+            imgPath: "/images/guilhermeShimada.webp"
+        },
+        {
+            description: "Faço a ponte entre nossa tecnologia e o campo. Transformo funcionalidades complexas em soluções práticas, garantindo que você aproveite o máximo do nosso sistema.",
+            name: "Gustavo Kletelinger",
+            responsibility: "Comunicação e marketing",
+            imgPath: "/images/gustavoKletelinger.webp"
+        },
+        {
+            description: "Crio a interface do sistema, focando em simplicidade e intuitividade. Transformo dados complexos em uma experiência visual clara para facilitar sua gestão.",
+            name: "Matheus Bertoldo",
+            responsibility: "Desenvolvedor Fron-end",
+            imgPath: "/images/matheusBertoldo.webp"
+        }
+    ]
+
     return(
         <>
-        <section id="team" className="flex flex-col w-full items-center py-22 px-5">
-            <h2 className="mb-2 text-4xl text-center text-slate-700 font-bold max-w-200">Nosso time de especialistas à sua disposição</h2>
-            <p className="mb-15 text-sm text-slate-600 font-light">Uma equipe inteira para te atender da melhor forma</p>
+        <section id="team" className="flex flex-col w-full min-h-dvh items-center pt-30 pb-22 px-5 bg-slate-50 font-inter select-none">
+            <HeadlineSection 
+                title="Nosso time de especialistas à sua disposição" 
+                subtitle="Uma equipe inteira para te atender da melhor forma"
+            />
 
-            <div className="flex max-w-270 gap-4 flex-wrap justify-center">
-                <div className="flex flex-col w-50 h-75 border border-slate-300 rounded-xl">
-                    <div className="flex flex-col flex-1 px-4 py-4 border-b border-slate-300">
-                        <div className="w-fit h-fit px-1 py-1 mb-1 rounded-md bg-slate-600">
-                            <ServerStackIcon className="w-5 h-5 fill-slate-50"/>
-                        </div>
-                        <p className="text-sm">Cuido da segurança e organização dos dados da sua safra, garantindo informações sólidas para sua gestão.</p>
-                    </div>
+            <div className="grid grid-cols-1 w-full max-w-300 gap-6 justify-items-center md:grid-cols-2 lg:grid-cols-3">
+                {
+                    data.map((item, index) => {
+                        return(
+                            // Cards individuais
+                            <div key={index} className="flex flex-col px-4 py-4 max-w-100 bg-white rounded-2xl shadow-xl group overflow-hidden select-none hover:border-amber-500">
+                                {/* Message */}
+                                <div className="flex flex-col flex-1 pb-4 mb-4 relative border-b border-slate-200">
+                                    <p className="absolute top-0 left-0 font-lexend text-9xl leading-24 text-slate-700/10">"</p> 
+                                    <p className="text-lg text-slate-700 leading-8">{item.description}</p>
+                                </div>
 
-                    <div className="flex items-center justify-end gap-4 py-4 px-2">
-                        <p className="text-sm">Arthur Parra</p>
-                        <div className="w-8 h-8 rounded-full bg-slate-300">
+                                {/* author */}
+                                <div className="flex items-center gap-4 px-2">
+                                    <div className="flex flex-col">
+                                        <p className="font-lexend text-slate-700">{item.name}</p>
+                                        <p className="text-md text-slate-500 font-light">{item.responsibility}</p>
+                                    </div>
 
-                        </div>
-                    </div>
-                </div>
-
-                <div className="flex flex-col w-50 h-75 border border-slate-300 rounded-xl">
-                    <div className="flex flex-col flex-1 px-4 py-4 border-b border-slate-300">
-                        <div className="w-fit h-fit px-1 py-1 mb-1 rounded-md bg-slate-600">
-                            <CheckBadgeIcon className="w-5 h-5 fill-slate-50"/>
-                        </div>
-                        <p className="text-sm">Asseguro a qualidade e o funcionamento perfeito das regras de negócio que movem o sistema.</p>
-                    </div>
-
-                    <div className="flex items-center justify-end gap-4 py-4 px-2">
-                        <p className="text-sm">Daniele Fiel</p>
-                        <div className="w-8 h-8 rounded-full bg-slate-300">
-
-                        </div>
-                    </div>
-                </div>
-
-                <div className="flex flex-col w-50 h-75 border border-slate-300 rounded-xl">
-                    <div className="flex flex-col flex-1 px-4 py-4 border-b border-slate-300">
-                        <div className="w-fit h-fit px-1 py-1 mb-1 rounded-md bg-slate-600">
-                            <AdjustmentsVerticalIcon className="w-5 h-5 fill-slate-50"/>
-                        </div>
-                        <p className="text-sm">Foco na estabilidade e performance da plataforma para que ela nunca deixe você na mão.</p>
-                    </div>
-
-                    <div className="flex items-center justify-end gap-4 py-4 px-2">
-                        <p className="text-sm">Guilherme Shimada</p>
-                        <div className="w-8 h-8 rounded-full bg-slate-300">
-
-                        </div>
-                    </div>
-                </div>
-
-                <div className="flex flex-col w-50 h-75 border border-slate-300 rounded-xl">
-                    <div className="flex flex-col flex-1 px-4 py-4 border-b border-slate-300">
-                        <div className="w-fit h-fit px-1 py-1 mb-1 rounded-md bg-slate-600">
-                            <PuzzlePieceIcon className="w-5 h-5 fill-slate-50"/>
-                        </div>
-                        <p className="text-sm">Conecto nossa tecnologia às suas necessidades, levando as melhores soluções até o campo.</p>
-                    </div>
-
-                    <div className="flex items-center justify-end gap-4 py-4 px-2">
-                        <p className="text-sm">Gustavo Kletelinger</p>
-                        <div className="w-8 h-8 rounded-full bg-slate-300">
-
-                        </div>
-                    </div>
-                </div>
-
-                <div className="flex flex-col w-50 h-75 border border-slate-300 rounded-xl">
-                    <div className="flex flex-col flex-1 px-4 py-4 border-b border-slate-300">
-                        <div className="w-fit h-fit px-1 py-1 mb-1 rounded-md bg-slate-600">
-                            <PencilSquareIcon className="w-5 h-5 fill-slate-50"/>
-                        </div>
-                        <p className="text-sm">Crio o visual e a experiência do sistema para que usar a Ponskan seja simples e intuitivo.</p>
-                    </div>
-
-                    <div className="flex items-center justify-end gap-4 py-4 px-2">
-                        <p className="text-sm">Matheus Bertoldo</p>
-                        <div className="w-8 h-8 rounded-full bg-slate-300">
-
-                        </div>
-                    </div>
-                </div>
+                                    <div className="w-12 h-12 ml-auto rounded-full bg-slate-300 overflow-hidden">
+                                        <Image src={item.imgPath} width={200} height={200} alt={item.name}/>
+                                    </div>
+                                </div>
+                            </div>
+                        )
+                    })
+                }
             </div>
         </section>
         </>

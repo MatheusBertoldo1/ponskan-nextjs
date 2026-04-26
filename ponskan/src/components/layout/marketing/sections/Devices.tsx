@@ -1,15 +1,16 @@
 import { CardDevices } from "../elements/CardDevices"
+import { HeadlineSection } from "../elements/HeadlineSection"
+import Image from "next/image"
 
 export const Devices = () => {
     return(
         <>
-        <section id="devices" className="flex flex-col items-center py-22 bg-amber-500 select-none">
-            <div className="">
-                <h2 className="mb-2 text-4xl text-center text-slate-50 font-bold max-w-200">Gerencie seu pomar por onde quiser</h2>
-                <p className="mb-15 text-sm text-center text-slate-50 font-light">Todas as informações necessárias em qualquer lugar</p>
-            </div>
+        <section id="devices" className="flex-col items-center min-h-dvh py-22 relative bg-amber-500 select-none">
+            <HeadlineSection className="text-white z-1" title="Gerencie seu pomar por onde quiser" subtitle="Todas as informações necessárias em qualquer lugar"/>
 
-            <CardDevices />
+            <CardDevices/>
+
+            <Image src="/images/bg2.avif" fill sizes="100vw" alt="" className="absolute object-cover opacity-35 z-0"/>
         </section>
         </>
     )

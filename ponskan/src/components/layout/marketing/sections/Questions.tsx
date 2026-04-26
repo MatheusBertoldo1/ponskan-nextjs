@@ -1,43 +1,52 @@
+import { HeadlineSection } from "../elements/HeadlineSection"
+import Image from "next/image"
+
 export const Questions = () => {
+    const data = [
+        {
+            question: "Como o sistema identifica a pinta preta nas frutas?",
+            answer: "Utilizamos visão computacional para reconhecer padrões visuais da pinta preta na superfície da fruta, detectando lesões precoces invisíveis a olho nu."
+        },
+        {
+            question: "O monitoramento é em tempo real?",
+            answer: "Sim. As imagens são processadas instantaneamente, gerando alertas automáticos assim que uma anomalia é detectada no pomar."
+        },
+        {
+            question: "Funciona sem internet no campo?",
+            answer: "Sim. O sistema pode processar dados localmente e sincronizar os relatórios com a nuvem assim que houver sinal disponível."
+        },
+        {
+            question: "Como o projeto reduz custos?",
+            answer: "Ao identificar focos específicos, permite a aplicação localizada de fungicidas, economizando insumos e reduzindo o impacto ambiental."
+        },
+        {
+            question: "Qual o impacto na exportação?",
+            answer: "Garante que os lotes atendam aos rigorosos padrões fitossanitários internacionais, aumentando o valor comercial e a aceitação no mercado externo."
+        },
+        {
+            question: "Quais relatórios são gerados?",
+            answer: "O sistema entrega mapas de calor das áreas afetadas, históricos de evolução da doença e alertas de risco para suporte à decisão."
+        },
+    ]
+
     return(
         <>
-        <section id="questions" className="flex flex-col w-full py-22 px-5 bg-amber-500">
-            <div className="max-w-270 w-full mx-auto">
-                <h2 className="mb-2 text-4xl text-white font-bold max-w-200">Perguntas Frequentes</h2>
-                <p className="mb-15 text-sm text-white  font-light">Tire suas dúvidas sobre como a Ponskan transforma a tecnologia em resultados para sua colheita</p>
-            </div>
+        <section id="questions" className="flex flex-col w-full min-h-dvh pt-30 pb-22 px-5 relative font-inter bg-amber-500 select-none ">
+            <HeadlineSection title="Perguntas Frequentes" subtitle="Entenda como a Ponskan transforma a tecnologia em resultados para sua colheita" className="text-white z-1" />
+            <Image src="/images/bg.avif" fill sizes="100vw" alt="" className="absolute object-cover opacity-25 z-0"/>
 
-            <div className="grid grid-cols-1 max-w-270 gap-y-10 gap-x-5 md:mx-auto md:grid-cols-2 lg:grid-cols-3">
-                <div className="flex flex-col max-w-80">
-                    <h3 className="text-lg font-semibold text-amber-900">Como o sistema identifica a pinta preta nas frutas?</h3>
-                    <p className="text-sm text-white">Utilizamos visão computacional para reconhecer padrões visuais da pinta preta na superfície da fruta, detectando lesões precoces invisíveis a olho nu.</p>
-                </div>
+            <div className="grid grid-cols-1 gap-y-4 gap-x-5 max-w-300 justify-items-center select-none mx-auto z-1 md:grid-cols-2 lg:justify-items-normal">
+                {
+                    data.map((item, index) => {
+                        return(
+                            <div key={index} className="flex flex-col px-4 py-4 gap-1 rounded-xl transition-all hover:bg-amber-50/10">
+                                <h3 className="text-xl font-semibold text-amber-900 font-lexend">{item.question}</h3>
+                                <p className="text-white">{item.answer}</p>
+                            </div>
+                        )
+                    })
+                }
 
-                <div className="flex flex-col max-w-80">
-                    <h3 className="text-lg font-semibold text-amber-900">O monitoramento é em tempo real?</h3>
-                    <p className="text-sm text-white">Sim. As imagens são processadas instantaneamente, gerando alertas automáticos assim que uma anomalia é detectada no pomar.</p>
-                </div>
-
-
-                <div className="flex flex-col max-w-80">
-                    <h3 className="text-lg font-semibold text-amber-900">Funciona sem internet no campo?</h3>
-                    <p className="text-sm text-white">Sim. O sistema pode processar dados localmente e sincronizar os relatórios com a nuvem assim que houver sinal disponível.</p>
-                </div>
-
-                <div className="flex flex-col max-w-80">
-                    <h3 className="text-lg font-semibold text-amber-900">Como o projeto reduz custos?</h3>
-                    <p className="text-sm text-white">Ao identificar focos específicos, permite a aplicação localizada de fungicidas, economizando insumos e reduzindo o impacto ambiental.</p>
-                </div>
-
-                <div className="flex flex-col max-w-80">
-                    <h3 className="text-lg font-semibold text-amber-900">Qual o impacto na exportação?</h3>
-                    <p className="text-sm text-white">Garante que os lotes atendam aos rigorosos padrões fitossanitários internacionais, aumentando o valor comercial e a aceitação no mercado externo.</p>
-                </div>
-
-                <div className="flex flex-col max-w-80">
-                    <h3 className="text-lg font-semibold text-amber-900">Quais relatórios são gerados?</h3>
-                    <p className="text-sm text-white">O sistema entrega mapas de calor das áreas afetadas, históricos de evolução da doença e alertas de risco para suporte à decisão.</p>
-                </div>
             </div>
         </section>
         </>

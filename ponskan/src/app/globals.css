@@ -9,7 +9,7 @@
   --color-background: var(--background);
   --color-foreground: var(--foreground);
   --font-lexend: var(--font-lexend-sans);
-  --font-inter: var(--font-geist-sans);
+  --font-inter: var(--font-inter-sans);
 }
 
 @media (prefers-color-scheme: dark) {
