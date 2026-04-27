@@ -26,7 +26,7 @@ export const Hero = () => {
                 </Link>
             </div>
 
-            <Image src="/images/hero-bg.avif" fill sizes="100vw" alt="" className="absolute object-cover opacity-35 z-0"/>
+            <Image src="/images/hero-bg.avif" fill sizes="100vw" alt="" className="absolute object-cover opacity-50 z-0"/>
         </section>
         </>
     )
