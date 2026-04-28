@@ -11,7 +11,7 @@ export const Hero = () => {
             <Header />
 
             <div className="flex flex-1 flex-col justify-center items-center pt-12 gap-6">
-                <h1 className="max-w-250 text-center leading-8 text-4xl text-slate-800 font-bold font-lexend md:leading-12 md:text-5xl lg:leading-16 lg:text-6xl z-1">Gerenciamento <span className="text-amber-500 relative">multiplataforma<Form className="absolute -bottom-6 -z-1 left-0 w-full text-amber-500/35"/></span> de doenças no seu pomar</h1>
+                <h1 className="max-w-250 text-center leading-8 text-4xl text-slate-800 font-bold font-lexend md:leading-12 md:text-5xl lg:leading-16 lg:text-6xl z-1">Gerenciamento <span className="bg-linear-to-r from-amber-400 to-orange-500 bg-clip-text text-transparent relative">multiplataforma<Form className="absolute -bottom-6 -z-1 left-0 w-full text-amber-500/35"/></span> de doenças no seu pomar</h1>
                 <h2 className="max-w-175 text-center text-md text-slate-500 font-normal font-inter lg:text-xl z-1">Proteja sua safra, reduza em até 30% o uso de defensivos ao identificar o momento biológico exato para a aplicação.<span className="text-amber-500"> Menos desperdício, mais margem.</span></h2>
     
                 <div className="flex gap-4 flex-wrap justify-center z-1">

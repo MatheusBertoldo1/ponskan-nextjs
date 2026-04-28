@@ -31,7 +31,7 @@ export const Team = () => {
         {
             description: "Crio a interface do sistema, focando em simplicidade e intuitividade. Transformo dados complexos em uma experiência visual clara para facilitar sua gestão.",
             name: "Matheus Bertoldo",
-            responsibility: "Desenvolvedor Fron-end",
+            responsibility: "Desenvolvedor Front-end",
             imgPath: "/images/matheusBertoldo.webp"
         }
     ]
