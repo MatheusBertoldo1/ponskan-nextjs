@@ -15,8 +15,8 @@ export const Hero = () => {
                 <h2 className="max-w-175 text-center text-md text-slate-500 font-normal font-inter lg:text-xl z-1">Proteja sua safra, reduza em até 30% o uso de defensivos ao identificar o momento biológico exato para a aplicação.<span className="text-amber-500"> Menos desperdício, mais margem.</span></h2>
     
                 <div className="flex gap-4 flex-wrap justify-center z-1">
-                    <Link href="" className="flex items-center whitespace-nowrap px-4 h-10 bg-amber-500 text-white text-base font-medium border rounded-full hover:bg-amber-500/80 transition-colors duration-200 ease-in-out">Quero meu pomar saudável</Link>
-                    <Link href="" className="flex items-center whitespace-nowrap gap-2 px-4 h-10 text-slate-700 border border-slate-300 rounded-full hover:bg-black/5 transition-colors duration-200 ease-in-out"> <PlayIcon className="w-5 h-5 text-slate-600"/> Ver vídeo</Link>
+                    <Link href="" className="font-lexend flex items-center whitespace-nowrap px-4 h-12 bg-amber-500 text-white text-base font-medium border rounded-full hover:bg-amber-600/90 transition-colors duration-200 ease-in-out">Quero meu pomar saudável</Link>
+                    <Link href="" className="font-lexend font-normal flex items-center whitespace-nowrap gap-2 px-4 h-12 text-slate-700 border border-slate-300 rounded-full hover:bg-black/5 transition-colors duration-200 ease-in-out"> <PlayIcon className="w-5 h-5 text-slate-600"/> Ver vídeo</Link>
                 </div>
             </div>
 
