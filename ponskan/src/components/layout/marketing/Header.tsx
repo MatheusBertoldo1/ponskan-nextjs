@@ -23,7 +23,7 @@ export const Header = () => {
                 </li>
 
                 <li> 
-                    <Link href="" className="flex relative items-center px-4 h-12 rounded-full text-white text-base font-medium active:scale-97 overflow-hidden whitespace-nowrap group">
+                    <Link href="/logon" className="flex relative items-center px-4 h-12 rounded-full text-white text-base font-medium active:scale-97 overflow-hidden whitespace-nowrap group">
                         <span className="hidden md:block z-1 leading-tight">Criar uma conta</span> <span className="block md:hidden z-1">Criar</span>
 
                         {/* Span para Efeito */}

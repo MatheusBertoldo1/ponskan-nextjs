@@ -1,12 +1,13 @@
 import { cn } from "@/lib/utils"
 import { tv, VariantProps } from "tailwind-variants"
+import { ComponentPropsWithoutRef } from "react"
 
-interface Props extends React.ButtonHTMLAttributes<HTMLButtonElement>, VariantProps<typeof button> {
+interface Props extends ComponentPropsWithoutRef<'button'>, VariantProps<typeof button> {
     children: React.ReactNode;
 }
 
 const button = tv({
-    base: "flex px-4 h-12 w-fit justify-center items-center text-base font-inter font-medium rounded-2xl transition-all active:scale-97",
+    base: "flex px-4 h-12 w-fit justify-center items-center text-base font-inter font-medium rounded-2xl transition-all select-none active:scale-97",
     variants: {
         variant: {
             primary: "bg-amber-500 hover:bg-amber-600/90 text-white cursor-pointer",
