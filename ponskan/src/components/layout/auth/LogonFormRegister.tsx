@@ -2,6 +2,7 @@
 
 import { LogoCurrentColor } from "@/assets/icons/LogoCurrentColor";
 import { Button } from "@/components/ui/Button"
+import { Input } from "@/components/ui/Imput";
 import { ProgressBar } from "@/components/ui/ProgressBar";
 import { useState } from "react";
 import { useForm, FormProvider, useFormContext } from "react-hook-form";
@@ -79,7 +80,7 @@ export const LogonFormRegister = () => {
     const methods = useForm()
 
     // Extraindo métodos específicos do useForm
-    const { handleSubmit, trigger, formState: { errors } } = methods
+    const { handleSubmit, trigger } = methods
 
     // Método que roda ao dar submit
     const onSubmit = (data: any) => { console.log("Enviando dados:", data) }
@@ -115,32 +116,11 @@ const Stage1 = () => {
 
     return (
         <>
-            <div className="flex flex-col gap-4 font-lexend">
-                <label className="text-sm text-slate-500">Primeiro Nome</label>
-
-                <input
-                    {...register("firstName", { required: "Necessário preencher o campo" })}
-
-                    className="text-sm border px-2 h-12 rounded-lg border-slate-300 hover:border-amber-400 focus:border-amber-500 outline-none transition-colors"
-                />
-                {errors.firstName?.message && (
-                    <label className="text-xs text-right w-full text-red-400">
-                        Campo obrigatório
-                    </label>
-                )}
-
-                <label className="text-sm text-slate-500">Sobrenome</label>
-
-                <input
-                    {...register("lastName", { required: "Necessário preencher o campo" })}
-
-                    className="text-sm border px-2 h-12 rounded-lg border-slate-300 hover:border-amber-400 focus:border-amber-500 outline-none transition-colors"
-                />
-                {errors.lastName?.message && (
-                    <label className="text-xs text-right w-full text-red-400">
-                        Campo obrigatório
-                    </label>
-                )}
+            <div className="flex flex-col gap-4 font-lexend py-4">
+                
+                <Input {...register("firstName", {required: "Campo obrigatório"})} name="firstName" textLabel="Primeiro nome" error={errors.firstName?.message as string}/>
+                <Input {...register("lastName", {required: "Campo obrigatório"})} name="lastName" textLabel="Sobrenome" error={errors.lastName?.message as string}/>
+                
             </div>
         </>
     )
