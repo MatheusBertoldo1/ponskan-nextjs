@@ -2,7 +2,7 @@
 
 import { LogoCurrentColor } from "@/assets/icons/LogoCurrentColor";
 import { Button } from "@/components/ui/Button"
-import { Input } from "@/components/ui/Imput";
+import { Input } from "@/components/ui/Input";
 import { ProgressBar } from "@/components/ui/ProgressBar";
 import { useState } from "react";
 import { useForm, FormProvider, useFormContext } from "react-hook-form";
@@ -10,7 +10,17 @@ import { useForm, FormProvider, useFormContext } from "react-hook-form";
 export const LogonFormRegister = () => {
     // Contador de etapas
     const maxRange = 6
-    const [stage, setStage] = useState(1)
+    const [stage, setStage] = useState(5)
+
+    // atribuindo todos os metodos de useForm para methods (usado em FormProvides) 
+    // // shouldUnregister: false -> para os dados não sumirem em formularios multi-etapas
+    const methods = useForm({shouldUnregister: false})
+
+    // Extraindo métodos específicos do useForm
+    const { handleSubmit, trigger, register, formState: { errors } } = methods
+
+    // Método que roda ao dar submit
+    const onSubmit = (data: any) => { console.log("Enviando dados:", data) }
 
     // Definir titulo e nome dos inputs de cada estágio do formulário
     const PropsStageForm = (stage: number) => {
@@ -27,19 +37,19 @@ export const LogonFormRegister = () => {
             },
             {
                 titleStage: "Localização e contato",
-                inputName: ["locale", "number"]
+                inputName: ["address", "phone"]
             },
             {
                 titleStage: "Dados empresariais",
                 inputName: ["cnpj"]
             },
             {
-                titleStage: "Estudante",
+                titleStage: "Você é um estudante?",
                 inputName: ["scholl", "course"]
             },
             {
                 titleStage: "Defina sua senha",
-                inputName: ["password", "confirmPassord"]
+                inputName: ["password", "confirmPassword"]
             },
         ]
 
@@ -69,22 +79,6 @@ export const LogonFormRegister = () => {
         stage > 1 ? setStage(stage - 1) : setStage(1)
     }
 
-    const showStage = (stage: number) => {
-        switch (stage) {
-            case 1: return <Stage1 />
-
-        }
-    }
-
-    // atribuindo todos os metodos de useForm para methods (usado em FormProvides)
-    const methods = useForm()
-
-    // Extraindo métodos específicos do useForm
-    const { handleSubmit, trigger } = methods
-
-    // Método que roda ao dar submit
-    const onSubmit = (data: any) => { console.log("Enviando dados:", data) }
-
     return (
         <div className="flex flex-1 p-10 bg-slate-50 rounded-3xl">
             <div className="flex flex-1 flex-col">
@@ -98,30 +92,65 @@ export const LogonFormRegister = () => {
                     <form onSubmit={handleSubmit(onSubmit)} className="flex flex-1 flex-col gap-4">
                         <ProgressBar stage={stage} range={maxRange} />
 
-                        {showStage(stage)}
+                        <div className="flex flex-col gap-4 font-lexend py-4">
+                            {stage == 1 && (
+                                <>
+                                    <Input {...register("firstName", { required: "Campo obrigatório" })} name="firstName" textLabel="Primeiro nome" error={errors.firstName?.message as string} />
+                                    <Input {...register("lastName", { required: "Campo obrigatório" })} name="lastName" textLabel="Sobrenome" error={errors.lastName?.message as string} />
+                                </>
+                            )}
+
+                            {stage == 2 && (
+                                <>
+                                    <Input  {...register("birthDate", { required: "Campo obrigatório", valueAsDate: true })} type="date" name="birthDate" textLabel="Data de nascimento" error={errors.birthDate?.message as string} />
+                                </>
+                            )}
+
+                            {stage == 3 && (
+                                <>
+                                    <Input {...register("address", { required: "Campo obrigatório" })} name="address" textLabel="Endereço" error={errors.address?.message as string} />
+                                    <Input {...register("phone", { required: "Campo obrigatório" })} name="phone" type="number" textLabel="Telefone" error={errors.phone?.message as string} />
+                                </>
+                            )}
+
+                            {stage == 4 && (
+                                <>
+                                    <Input {...register("cnpj")} name="cnpj" textLabel="CNPJ (opcional)" type="number" error={errors.cnpj?.message as string} defaultValue="" />
+                                </>
+                            )}
+
+                            {stage == 5 && (
+                                <>
+                                    <div className="flex gap-3 items-center">
+                                        <input type="checkbox" name="isStudent" id="isStudent" className="" />
+                                        <label htmlFor="isStudent" className="text-sm leading-0 text-slate-600 cursor-pointer">Sou um estudante</label>
+                                    </div>
+                                    <Input {...register("scholl", { required: "Campo obrigatório" })} name="scholl" textLabel="Nome da instituição" error={errors.scholl?.message as string} />
+                                    <Input {...register("course", { required: "Campo obrigatório" })} name="course" textLabel="Nome do curso" error={errors.course?.message as string} />
+                                </>
+                            )}
+
+                            {stage == 6 && (
+                                <>
+                                    <Input {...register("password", { required: "Campo obrigatório" })} type="password" name="password" textLabel="Senha" error={errors.password?.message as string} />
+                                    <Input {...register("confirmPassword", { required: "Campo obrigatório"})} type="password" name="confirmPassword" textLabel="Confirmar senha" error={errors.confirmPassword?.message as string} />
+                                </>
+                            )}
+                        </div>
 
                         <div className="flex flex-1 items-end w-full">
                             <Button type="button" onClick={decreaseValue} variant={stage > 1 ? "secondary" : "disabled"}>Voltar</Button>
-                            <Button type="button" onClick={increaseValue} className="ml-auto" variant="primary">Avançar</Button>
+
+                            {
+                                stage == maxRange ?
+                                <Button type="submit" className="ml-auto" variant="primary">Cadastrar</Button>
+                                :
+                                <Button type="button" onClick={increaseValue} className="ml-auto" variant="primary">Avançar</Button>
+                            }
                         </div>
                     </form>
                 </FormProvider>
             </div>
         </div>
-    )
-}
-
-const Stage1 = () => {
-    const { register, formState: { errors } } = useFormContext()
-
-    return (
-        <>
-            <div className="flex flex-col gap-4 font-lexend py-4">
-                
-                <Input {...register("firstName", {required: "Campo obrigatório"})} name="firstName" textLabel="Primeiro nome" error={errors.firstName?.message as string}/>
-                <Input {...register("lastName", {required: "Campo obrigatório"})} name="lastName" textLabel="Sobrenome" error={errors.lastName?.message as string}/>
-                
-            </div>
-        </>
     )
 }
