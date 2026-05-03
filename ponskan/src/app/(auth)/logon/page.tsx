@@ -4,7 +4,7 @@ export default function Logon() {
     
 
     return (
-        <div className="flex flex-col min-h-[50%] max-h-100 h-full w-full max-w-200 font-lexend ">
+        <div className="flex flex-col min-h-[50%] max-h-100 h-full w-full max-w-200 font-lexend select-none">
             {/* Formulário */}
             <LogonFormRegister />
 
@@ -18,21 +18,3 @@ export default function Logon() {
     )
 }
 
-/*
-primeiro nome 
-sobrenome
--------------
-data de nascimento
--------------
-endereço
-telefone
--------------
-CNPJ (opcional)
--------------
-isStundent?
-escola
-curso
--------------
-senha
-repetir senha
-*/

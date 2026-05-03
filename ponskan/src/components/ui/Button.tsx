@@ -20,10 +20,10 @@ const button = tv({
     }
 })
 
-export const Button = ({className, children, variant, ...props}: Props) => {
+export const Button = ({className, children, variant, type, ...props}: Props) => {
     
     return(
-        <button className={cn(button({variant}), className)} {...props}>
+        <button type={type} className={cn(button({variant}), className)} {...props}>
             {children}
         </button>
     )

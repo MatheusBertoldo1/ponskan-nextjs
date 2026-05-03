@@ -2,150 +2,209 @@
 
 import { LogoCurrentColor } from "@/assets/icons/LogoCurrentColor";
 import { Button } from "@/components/ui/Button"
-import { Input } from "@/components/ui/Input";
+import { InputText } from "@/components/ui/InputText";
 import { ProgressBar } from "@/components/ui/ProgressBar";
 import { useState } from "react";
-import { useForm, FormProvider, useFormContext } from "react-hook-form";
+import { useForm, FormProvider } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { z } from "zod";
 
+const registerSchema = z.object({
+    firstName: z.string().min(2, "Nome é obrigatório"),
+    lastName: z.string().min(2, "Sobrenome é obrigatório"),
+
+    birthDate: z.string()
+        .min(1, "Data de aniversário é obrigatória").transform(val => val.replace(/-/g, "/")) // Padroniza para /
+        .refine(val => /^\d{2}\/\d{2}\/\d{4}$/.test(val), "Formato Inválido")
+        .transform(val => {
+            const [dia, mes, ano] = val.split("/");
+            return `${ano}-${mes}-${dia}`; // Converte para formato ISO (AAAA-MM-DD)
+        })
+        .pipe(
+            z.string().refine(val => {
+                const date = new Date(val);
+                // Verifica se é uma data válida e se não é no futuro
+                return !isNaN(date.getTime()) && date <= new Date();
+            }, "Data inválida ou no futuro")
+        ),
+
+    mail: z.email().min(1, "E-mail é obrigatório").trim(),
+
+    address: z.string().min(1, "Endereço é obrigatório"),
+
+    phone: z.string()
+        .min(1, "Telefone é obrigatório")
+        .transform((val) => val.replace(/[^\d]/g, ""))
+        .pipe(
+            z.string()
+                .min(10, "Mínimo 10 dígitos")
+                .max(11, "Máximo 11 dígitos")
+        ),
+
+    // CNPJ: Transforma, se for vazio aceita, se tiver algo tem que ter 14
+    cnpj: z.string()
+        .transform((val) => val.replace(/[^\d]/g, ""))
+        .refine((val) => val.length === 0 || val.length === 14, "CNPJ deve ter 14 dígitos"),
+
+    isStudent: z.boolean(),
+    school: z.string().optional().or(z.literal("")),
+    course: z.string().optional().or(z.literal("")),
+
+    password: z.string().min(6, "Mínimo 6 caracteres"),
+    confirmPassword: z.string().min(6, "Confirmação é obrigatória")
+}).refine((data) => data.password === data.confirmPassword, {
+    message: "As senhas não coincidem",
+    path: ["confirmPassword"],
+});
+
+// Extrair o type do objeto zod
+type RegisterFormData = z.infer<typeof registerSchema>;
+
+// Definir o formato e os dados que são aceitos nas etapas do formulário
+type Step = {
+    title: string,
+    fields: (keyof RegisterFormData)[]
+}
+
+// Definir titulo e nome dos InputTexts de cada estágio do formulário
+const FORM_STEPS: Step[] = [
+    {
+        title: "Insira seu nome",
+        fields: ["firstName", "lastName"],
+    },
+    {
+        title: "Data de nascimento",
+        fields: ["birthDate"],
+    },
+    {
+        title: "Localização e contato",
+        fields: ["address", "phone", "mail"],
+    },
+    {
+        title: "Dados empresariais",
+        fields: ["cnpj"],
+    },
+    {
+        title: "Você é um estudante?",
+        fields: ["school", "course"],
+    },
+    {
+        title: "Defina sua senha",
+        fields: ["password", "confirmPassword"],
+    },
+]
+
+// --------- Formulário de registro multi-etapas  --------------
 export const LogonFormRegister = () => {
     // Contador de etapas
-    const maxRange = 6
-    const [stage, setStage] = useState(5)
+    const maxRange = 5
+    const [stage, setStage] = useState(0)
 
     // atribuindo todos os metodos de useForm para methods (usado em FormProvides) 
     // // shouldUnregister: false -> para os dados não sumirem em formularios multi-etapas
-    const methods = useForm({shouldUnregister: false})
+    const methods = useForm<RegisterFormData>(
+        {
+            shouldUnregister: false,
+            resolver: zodResolver(registerSchema),
+            mode: "onBlur"
+        }
+    )
 
     // Extraindo métodos específicos do useForm
-    const { handleSubmit, trigger, register, formState: { errors } } = methods
+    const { handleSubmit, trigger, register, watch, formState: { errors } } = methods
 
-    // Método que roda ao dar submit
-    const onSubmit = (data: any) => { console.log("Enviando dados:", data) }
-
-    // Definir titulo e nome dos inputs de cada estágio do formulário
-    const PropsStageForm = (stage: number) => {
-        let currentStage = stage - 1
-
-        const propsStage = [
-            {
-                titleStage: "Insira seu nome",
-                inputName: ["firstName", "lastName"]
-            },
-            {
-                titleStage: "Data de nascimento",
-                inputName: ["birthDate"]
-            },
-            {
-                titleStage: "Localização e contato",
-                inputName: ["address", "phone"]
-            },
-            {
-                titleStage: "Dados empresariais",
-                inputName: ["cnpj"]
-            },
-            {
-                titleStage: "Você é um estudante?",
-                inputName: ["scholl", "course"]
-            },
-            {
-                titleStage: "Defina sua senha",
-                inputName: ["password", "confirmPassword"]
-            },
-        ]
-
-        return propsStage[currentStage]
-    }
-
-    // Validar os nomes dos inputs passados pelo PropsStageForm
-    const ValidateStageForm = async () => {
-        let imputsForm = PropsStageForm(stage).inputName
-
-        if (!imputsForm) return false
-
-        const IsValid = await trigger(imputsForm)
-
-        return IsValid
-    }
+    // Verificando checkbox se é estudante
+    const isStudent = watch("isStudent")
 
     // Incrementa valor no contador
     const increaseValue = async () => {
-        let isValid = await ValidateStageForm()
+        let inputTextsForm = FORM_STEPS[stage].fields // Guardar os campos do estágio atual
+        
+        if (!inputTextsForm) return false // Verificação se os campos existem
 
-        if (isValid) stage < maxRange ? setStage(stage + 1) : setStage(maxRange)
+        let isValid
+
+        if (stage < maxRange ) isValid = await trigger(inputTextsForm) // Validação dos campos e retornando true/false 
+
+        if (isValid) stage < maxRange ? setStage(stage + 1) : setStage(maxRange) 
     }
 
     // Decrementa valor no contador
     const decreaseValue = () => {
-        stage > 1 ? setStage(stage - 1) : setStage(1)
+        stage > 0 ? setStage(stage - 1) : setStage(0)
     }
+
+    // Método OnKeyDown('enter')
+    const OnKeyDown = (e: React.KeyboardEvent<HTMLFormElement>) => {
+        if(e.key === 'Enter'){
+            e.preventDefault()
+
+            if(stage < maxRange) {
+                increaseValue()
+            }
+        }
+    } 
+
+    // Método que roda ao dar submit
+    const onSubmit = (data: any) => { alert("Enviando dados:"); console.log("Enviando dados:", data) }
 
     return (
         <div className="flex flex-1 p-10 bg-slate-50 rounded-3xl">
             <div className="flex flex-1 flex-col">
                 <LogoCurrentColor className=" w-10 h-10 text-slate-600" />
                 <h1 className="mt-6 text-3xl font-bold text-slate-700">Crie uma conta Ponskan</h1>
-                <p className="text-slate-500 mt-1">{PropsStageForm(stage).titleStage}</p>
+                <p className="text-slate-500 mt-1">{FORM_STEPS[stage].title}</p>
             </div>
 
             <div className="flex flex-1 flex-col gap-6">
                 <FormProvider {...methods}>
-                    <form onSubmit={handleSubmit(onSubmit)} className="flex flex-1 flex-col gap-4">
-                        <ProgressBar stage={stage} range={maxRange} />
+                    <form onSubmit={handleSubmit(onSubmit)} onKeyDown={OnKeyDown} className="flex flex-1 flex-col gap-4">
+
+                        <ProgressBar stage={stage + 1} range={maxRange + 1} />
 
                         <div className="flex flex-col gap-4 font-lexend py-4">
-                            {stage == 1 && (
-                                <>
-                                    <Input {...register("firstName", { required: "Campo obrigatório" })} name="firstName" textLabel="Primeiro nome" error={errors.firstName?.message as string} />
-                                    <Input {...register("lastName", { required: "Campo obrigatório" })} name="lastName" textLabel="Sobrenome" error={errors.lastName?.message as string} />
-                                </>
-                            )}
 
-                            {stage == 2 && (
-                                <>
-                                    <Input  {...register("birthDate", { required: "Campo obrigatório", valueAsDate: true })} type="date" name="birthDate" textLabel="Data de nascimento" error={errors.birthDate?.message as string} />
-                                </>
-                            )}
+                            {/* STAGE 0 */}
+                            <InputText {...register("firstName")} visible={stage === 0} inputId="firstName" textLabel="Primeiro nome" error={errors.firstName?.message} />
+                            <InputText {...register("lastName")} visible={stage === 0} inputId="lastName" textLabel="Sobrenome" error={errors.lastName?.message} />
 
-                            {stage == 3 && (
-                                <>
-                                    <Input {...register("address", { required: "Campo obrigatório" })} name="address" textLabel="Endereço" error={errors.address?.message as string} />
-                                    <Input {...register("phone", { required: "Campo obrigatório" })} name="phone" type="number" textLabel="Telefone" error={errors.phone?.message as string} />
-                                </>
-                            )}
+                            {/* STAGE 1 */}
+                            <InputText {...register("birthDate")} visible={stage === 1} inputId="birthDate" textLabel="Data de nascimento" error={errors.birthDate?.message} />
 
-                            {stage == 4 && (
-                                <>
-                                    <Input {...register("cnpj")} name="cnpj" textLabel="CNPJ (opcional)" type="number" error={errors.cnpj?.message as string} defaultValue="" />
-                                </>
-                            )}
+                            {/* STAGE 2 */}
+                            <InputText {...register("address")} visible={stage === 2} inputId="address" textLabel="Endereço" error={errors.address?.message} />
+                            <InputText {...register("mail")} visible={stage === 2} inputId="mail" textLabel="Email" error={errors.mail?.message} />
+                            <InputText {...register("phone")} visible={stage === 2} type="number" inputId="phone" textLabel="Telefone" error={errors.phone?.message} />
 
-                            {stage == 5 && (
-                                <>
-                                    <div className="flex gap-3 items-center">
-                                        <input type="checkbox" name="isStudent" id="isStudent" className="" />
-                                        <label htmlFor="isStudent" className="text-sm leading-0 text-slate-600 cursor-pointer">Sou um estudante</label>
-                                    </div>
-                                    <Input {...register("scholl", { required: "Campo obrigatório" })} name="scholl" textLabel="Nome da instituição" error={errors.scholl?.message as string} />
-                                    <Input {...register("course", { required: "Campo obrigatório" })} name="course" textLabel="Nome do curso" error={errors.course?.message as string} />
-                                </>
-                            )}
+                            {/* STAGE 3 */}
+                            <InputText {...register("cnpj")} visible={stage === 3} type="number" inputId="cnpj" textLabel="CNPJ (opcional)" error={errors.cnpj?.message} defaultValue={""}/>
 
-                            {stage == 6 && (
-                                <>
-                                    <Input {...register("password", { required: "Campo obrigatório" })} type="password" name="password" textLabel="Senha" error={errors.password?.message as string} />
-                                    <Input {...register("confirmPassword", { required: "Campo obrigatório"})} type="password" name="confirmPassword" textLabel="Confirmar senha" error={errors.confirmPassword?.message as string} />
-                                </>
-                            )}
+                            {/* STAGE 4 - Controle individual sem div superior */}
+                            <div className={`flex flex-col w-full gap-3 ${stage !== 4 && "hidden"}`}>
+                                <div className="flex gap-3">
+                                    <input type="checkbox" {...register("isStudent")} id="isStudent" className="cursor-pointer"/>
+                                    <label htmlFor="isStudent" className="text-sm text-slate-600 cursor-pointer">Sou um estudante</label>
+                                </div>
+
+                                <div style={{maxHeight: isStudent ? '300px' : '0px', opacity: isStudent ? '1' : '0'}} className={`mt-1 pt-1 flex flex-col overflow-hidden transition-all duration-300`}>
+                                    <InputText {...register("school")} visible={stage === 4} inputId="school" textLabel="Nome da instituição" error={errors.school?.message} />
+                                    <InputText {...register("course")} visible={stage === 4} inputId="course" textLabel="Nome do curso" error={errors.course?.message} />
+                                </div>
+                            </div>
+
+                            {/* STAGE 5 */}
+                            <InputText {...register("password")} visible={stage === 5} type="password" inputId="password" textLabel="Senha" error={errors.password?.message} />
+                            <InputText {...register("confirmPassword")} visible={stage === 5} type="password" inputId="confirmPassword" textLabel="Confirmar senha" error={errors.confirmPassword?.message} />
                         </div>
 
                         <div className="flex flex-1 items-end w-full">
-                            <Button type="button" onClick={decreaseValue} variant={stage > 1 ? "secondary" : "disabled"}>Voltar</Button>
+                            <Button onClick={decreaseValue} variant={stage > 0 ? "secondary" : "disabled"}>Voltar</Button>
 
                             {
                                 stage == maxRange ?
-                                <Button type="submit" className="ml-auto" variant="primary">Cadastrar</Button>
-                                :
-                                <Button type="button" onClick={increaseValue} className="ml-auto" variant="primary">Avançar</Button>
+                                    <Button type="submit" onClick={increaseValue} className="ml-auto" variant="primary">Criar conta</Button>
+                                    :
+                                    <Button type="button" onClick={increaseValue} className="ml-auto" variant="primary">Avançar</Button>
                             }
                         </div>
                     </form>
