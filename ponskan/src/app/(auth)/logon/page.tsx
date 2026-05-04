@@ -4,7 +4,7 @@ export default function Logon() {
     
 
     return (
-        <div className="flex flex-col min-h-[50%] max-h-100 h-full w-full max-w-200 font-lexend select-none">
+        <div className="flex flex-col min-h-[60%] h-fit w-full max-w-200 font-lexend select-none">
             {/* Formulário */}
             <LogonFormRegister />
 

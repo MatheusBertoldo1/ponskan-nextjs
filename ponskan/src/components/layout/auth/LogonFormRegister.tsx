@@ -104,7 +104,7 @@ const FORM_STEPS: Step[] = [
 // --------- Formulário de registro multi-etapas  --------------
 export const LogonFormRegister = () => {
     // Contador de etapas - baseado na quantidade de estapas de FORM_STEPS
-    const maxRange = (typeof FORM_STEPS).length - 1
+    const maxRange = FORM_STEPS.length - 1
     const [stage, setStage] = useState(0)
 
     // atribuindo todos os metodos de useForm para methods (usado em FormProvides) 
@@ -113,7 +113,7 @@ export const LogonFormRegister = () => {
         {
             shouldUnregister: false,
             resolver: zodResolver(registerSchema),
-            mode: "onBlur"
+            mode: "all"
         }
     )
 
@@ -158,11 +158,19 @@ export const LogonFormRegister = () => {
     // Método OnKeyDown('enter')
     const OnKeyDown = (e: React.KeyboardEvent<HTMLFormElement>) => {
         if (e.key === 'Enter') {
-            e.preventDefault()
+            e.preventDefault();
 
-            if (stage < maxRange) {
-                increaseValue()
+            // Tira o foco do input atual para forçar o RHF a registrar o valor
+            if (document.activeElement instanceof HTMLElement) {
+                document.activeElement.blur();
             }
+
+            // Espera um "frame" para o React processar o blur e chama a função
+            requestAnimationFrame(() => {
+                if (stage < maxRange) {
+                    increaseValue();
+                }
+            });
         }
     }
 
@@ -173,7 +181,7 @@ export const LogonFormRegister = () => {
         <div className="flex flex-1 p-10 bg-slate-50 rounded-3xl">
             <div className="flex flex-1 flex-col">
                 <LogoCurrentColor className=" w-10 h-10 text-slate-600" />
-                <h1 className="mt-6 text-3xl font-bold text-slate-700">Crie uma conta Ponskan</h1>
+                <h1 className="mt-6 text-3xl font-bold text-slate-700">Crie uma conta Ponskan {stage}</h1>
                 <p className="text-slate-500 mt-1">{FORM_STEPS[stage].title}</p>
             </div>
 
@@ -190,7 +198,7 @@ export const LogonFormRegister = () => {
                                     initial={{ opacity: 0, x: 20 }} // Começa invisível e um pouco à direita
                                     animate={{ opacity: 1, x: 0 }}  // Entra suavemente
                                     exit={{ opacity: 0, x: -20 }}   // Sai para a esquerda
-                                    transition={{ duration: 0.3 }} 
+                                    transition={{ duration: 0.3 }}
                                 >
                                     {/* STAGE 0 */}
                                     <InputText {...register("firstName")} visible={stage === 0} inputId="firstName" textLabel="Primeiro nome" error={errors.firstName?.message} />
@@ -234,7 +242,7 @@ export const LogonFormRegister = () => {
 
                                     {/* STAGE 5 */}
                                     <div className="flex flex-col flex-1">
-                                        <InputText {...register("password")} visible={stage === 5} type="password" inputId="password" textLabel="Senha" error={errors.password?.message} />
+                                        <InputText {...register("password")} visible={stage === 5} type="password" inputId="password" textLabel="Senha" error={stage === 5 ? errors.password?.message : undefined} />
                                         <InputText {...register("confirmPassword")} visible={stage === 5} type="password" inputId="confirmPassword" textLabel="Confirmar senha" error={errors.confirmPassword?.message} />
                                     </div>
                                 </motion.div>
