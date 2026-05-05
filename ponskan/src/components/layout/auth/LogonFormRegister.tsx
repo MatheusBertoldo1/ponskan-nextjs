@@ -30,7 +30,7 @@ const registerSchema = z.object({
             }, "Data inválida ou no futuro")
         ),
 
-    mail: z.email().min(1, "E-mail é obrigatório").max(100, "Email muito grande").trim(),
+    mail: z.email("Email inválido").min(1, "E-mail é obrigatório").max(100, "Email muito grande").trim(),
 
     address: z.string().min(1, "Endereço é obrigatório").max(255, "Endereço muito grande").refine(val => !/[^a-zA-ZÀ-ÿ]/.test(val), "Contem caracteres proibidos").trim(),
 
@@ -152,6 +152,7 @@ export const LogonFormRegister = () => {
 
     // Decrementa valor no contador
     const decreaseValue = () => {
+
         stage > 0 ? setStage(stage - 1) : setStage(0)
     }
 
@@ -181,7 +182,7 @@ export const LogonFormRegister = () => {
         <div className="flex flex-1 p-10 bg-slate-50 rounded-3xl">
             <div className="flex flex-1 flex-col">
                 <LogoCurrentColor className=" w-10 h-10 text-slate-600" />
-                <h1 className="mt-6 text-3xl font-bold text-slate-700">Crie uma conta Ponskan {stage}</h1>
+                <h1 className="mt-6 text-3xl font-bold text-slate-700">Crie uma conta Ponskan</h1>
                 <p className="text-slate-500 mt-1">{FORM_STEPS[stage].title}</p>
             </div>
 
@@ -225,7 +226,7 @@ export const LogonFormRegister = () => {
                                         } />
 
                                     {/* STAGE 3 */}
-                                    <InputText {...register("cnpj")} visible={stage === 3} type="number" inputId="cnpj" textLabel="CNPJ (opcional)" error={errors.cnpj?.message} defaultValue={""} />
+                                    <InputText {...register("cnpj")} visible={stage === 3} inputId="cnpj" textLabel="CNPJ (opcional)" error={errors.cnpj?.message} defaultValue={""} />
 
                                     {/* STAGE 4 */}
                                     <div className={`flex flex-col w-full gap-3 ${stage !== 4 && "hidden"}`}>
@@ -250,7 +251,7 @@ export const LogonFormRegister = () => {
                         </div>
 
                         <div className="flex flex-1 items-end w-full">
-                            <Button onClick={decreaseValue} variant={stage > 0 ? "secondary" : "disabled"}>Voltar</Button>
+                            <Button type="button" onClick={decreaseValue} variant={stage > 0 ? "secondary" : "disabled"}>Voltar</Button>
 
                             {
                                 stage == maxRange ?
