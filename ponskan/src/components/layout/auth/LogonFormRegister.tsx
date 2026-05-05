@@ -7,6 +7,7 @@ import { ProgressBar } from "@/components/ui/ProgressBar";
 import { DateMask, PhoneMask } from "@/utils/masks";
 import { motion, AnimatePresence } from "framer-motion";
 import { useState, useEffect } from "react";
+import { api } from "@/services/api";
 import { useForm, FormProvider } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
@@ -81,11 +82,11 @@ const FORM_STEPS: Step[] = [
     },
     {
         title: "Data de nascimento",
-        fields: ["birthDate"],
+        fields: ["mail", "phone"],
     },
     {
         title: "Localização e contato",
-        fields: ["address", "phone", "mail"],
+        fields: ["address", "birthDate"],
     },
     {
         title: "Dados empresariais",
@@ -106,6 +107,9 @@ export const LogonFormRegister = () => {
     // Contador de etapas - baseado na quantidade de estapas de FORM_STEPS
     const maxRange = FORM_STEPS.length - 1
     const [stage, setStage] = useState(0)
+
+    // Estado de validação doformulário
+    const [isSubmiting, setIsSubmiting] = useState(false)
 
     // atribuindo todos os metodos de useForm para methods (usado em FormProvides) 
     // // shouldUnregister: false -> para os dados não sumirem em formularios multi-etapas
@@ -152,7 +156,6 @@ export const LogonFormRegister = () => {
 
     // Decrementa valor no contador
     const decreaseValue = () => {
-
         stage > 0 ? setStage(stage - 1) : setStage(0)
     }
 
@@ -176,7 +179,23 @@ export const LogonFormRegister = () => {
     }
 
     // Método que roda ao dar submit
-    const onSubmit = (data: any) => { alert("Enviando dados:"); console.log("Enviando dados:", data) }
+    const onSubmit = async (data: any) => {
+
+        try {
+            const response = await api.post('/users/register', data)
+            setIsSubmiting(true)
+            
+            if (response.status === 201) {
+                alert("Conta criada com sucesso!")
+            }
+        } catch (error: any) {
+            const errorMessage = error.response?.data?.message || "Erro ao conectar com o servidor.";
+            alert(`Falha no cadastro: ${errorMessage}`);
+        }
+
+        alert("Enviando dados:")
+        console.log("Enviando dados:", data)
+    }
 
     return (
         <div className="flex flex-1 p-10 bg-slate-50 rounded-3xl">
@@ -206,24 +225,26 @@ export const LogonFormRegister = () => {
                                     <InputText {...register("lastName")} visible={stage === 0} inputId="lastName" textLabel="Sobrenome" error={errors.lastName?.message} />
 
                                     {/* STAGE 1 */}
-                                    <InputText {...register("birthDate")} visible={stage === 1} inputId="birthDate" textLabel="Data de nascimento" error={errors.birthDate?.message}
-                                        onChange={
-                                            (e) => {
-                                                const { value } = e.target;
-                                                e.target.value = DateMask(value);
-                                            }
-                                        } />
-
-                                    {/* STAGE 2 */}
-                                    <InputText {...register("address")} visible={stage === 2} inputId="address" textLabel="Endereço" error={errors.address?.message} />
-                                    <InputText {...register("mail")} visible={stage === 2} inputId="mail" textLabel="Email" error={errors.mail?.message} />
-                                    <InputText {...register("phone")} visible={stage === 2} inputId="phone" textLabel="Telefone" error={errors.phone?.message}
+                                    <InputText {...register("mail")} visible={stage === 1} inputId="mail" textLabel="Email" error={errors.mail?.message} />
+                                    <InputText {...register("phone")} visible={stage === 1} inputId="phone" textLabel="Telefone" error={errors.phone?.message}
                                         onChange={
                                             (e) => {
                                                 const { value } = e.target
                                                 e.target.value = PhoneMask(value)
                                             }
-                                        } />
+                                        }
+                                    />
+
+                                    {/* STAGE 2 */}
+                                    <InputText {...register("address")} visible={stage === 2} inputId="address" textLabel="Endereço" error={errors.address?.message} />
+                                    <InputText {...register("birthDate")} visible={stage === 2} inputId="birthDate" textLabel="Data de nascimento" error={errors.birthDate?.message}
+                                        onChange={
+                                            (e) => {
+                                                const { value } = e.target;
+                                                e.target.value = DateMask(value);
+                                            }
+                                        }
+                                    />
 
                                     {/* STAGE 3 */}
                                     <InputText {...register("cnpj")} visible={stage === 3} inputId="cnpj" textLabel="CNPJ (opcional)" error={errors.cnpj?.message} defaultValue={""} />
@@ -235,7 +256,7 @@ export const LogonFormRegister = () => {
                                             <label htmlFor="isStudent" className="text-sm text-slate-600 cursor-pointer">Sou um estudante</label>
                                         </div>
 
-                                        <div style={{ maxHeight: isStudent ? '300px' : '0px', opacity: isStudent ? '1' : '0' }} className={`mt-1 pt-1 flex flex-col overflow-hidden transition-all duration-300`}>
+                                        <div style={{ maxHeight: isStudent ? '300px' : '0px', opacity: isStudent ? '1' : '0' }} className={`flex pt-2 flex-col overflow-hidden transition-all duration-300`}>
                                             <InputText {...register("school")} visible={stage === 4} inputId="school" textLabel="Nome da instituição" error={errors.school?.message} />
                                             <InputText {...register("course")} visible={stage === 4} inputId="course" textLabel="Nome do curso" error={errors.course?.message} />
                                         </div>
@@ -255,7 +276,7 @@ export const LogonFormRegister = () => {
 
                             {
                                 stage == maxRange ?
-                                    <Button type="submit" className="ml-auto" variant="primary">Criar conta</Button>
+                                    <Button type="submit" className="ml-auto" variant={isSubmiting ? "disabled" : "primary"}>{isSubmiting ? "Enviando" : "Criar conta"}</Button>
                                     :
                                     <Button type="button" onClick={increaseValue} className="ml-auto" variant="primary">Avançar</Button>
                             }

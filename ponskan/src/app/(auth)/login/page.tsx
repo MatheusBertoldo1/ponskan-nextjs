@@ -4,8 +4,44 @@ import { Button } from "@/components/ui/Button"
 import { LogoCurrentColor } from "@/assets/icons/LogoCurrentColor";
 import { InputText } from "@/components/ui/InputText";
 import { AnimatePresence, motion } from "framer-motion";
+import Link from "next/link";
+import { useForm } from "react-hook-form";
+import { useState } from "react";
+import z from "zod";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { api } from "@/services/api";
 
+const login_schema = z.object({
+    email: z.email("Email inválido").min(1, "E-mail é obrigatório").max(100, "Email muito grande").trim(),
+    password: z.string().min(1, "Senha é obrigatório")
+})
+
+type LoginFormData = z.infer<typeof login_schema>
+
+// Login
 export default function Login() {
+    const [isSubmiting, setIsSubmiting] = useState(false)
+
+    const methods = useForm<LoginFormData>({
+        mode: "onBlur",
+        resolver: zodResolver(login_schema)
+    })
+
+    const { handleSubmit, register, formState: { errors }} = methods
+
+    const onSubmit = async (data: any) => {
+        setIsSubmiting(true)
+
+        try{
+            const response = await api.get("/login", data)
+
+            if(response.status === 201 ){
+                console.log("ok")
+            }
+        } catch (error) {
+            console.log(error)
+        }
+    }
     return (
         <div className="flex flex-col w-full max-w-200 font-lexend select-none">
             <div className="flex p-10 bg-slate-50 rounded-3xl">
@@ -16,19 +52,19 @@ export default function Login() {
                 </div>
 
                 <div className="flex flex-1 flex-col">
-                    <form method="get" action="google.com" className="flex flex-col gap-4 mt-8 ">
+                    <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-4 mt-8 ">
                         <AnimatePresence mode="wait">
                             <motion.div
                                 initial={{ opacity: 0, x: 20 }} // Começa invisível e um pouco à direita
                                 animate={{ opacity: 1, x: 0 }}  // Entra suavemente
                                 exit={{ opacity: 0, x: -20 }}   // Sai para a esquerda
-                                transition={{ duration: 0.3 }}  
+                                transition={{ duration: 0.3 }}
                             >
-                                <InputText inputId="email" textLabel="Email" visible />
-                                <InputText type="password" inputId="senha" textLabel="Senha" visible />
+                                <InputText {...register("email")} inputId="email" textLabel="Email" visible error={errors.email?.message}/>
+                                <InputText {...register("password")} type="password" inputId="senha" textLabel="Senha" visible error={errors.password?.message}/>
                             </motion.div>
                         </AnimatePresence>
-                        <Button className="self-end" variant="primary">Acessar conta</Button>
+                        <Button type="submit" className="self-end" variant={isSubmiting ? "disabled" : "primary"}>{isSubmiting ? "Acessando..." : "Acessar conta"}</Button>
                     </form>
                     <p className="text-center mt-6 text-sm text-slate-500">
                         Ainda não possui uma conta? <a href="/logon" className="text-amber-500 font-bold hover:underline">Crie agora.</a>
@@ -37,6 +73,10 @@ export default function Login() {
             </div>
 
             <div className="flex justify-end gap-4 pt-4 pr-4 border-t border-slate-200 font-inter text-sm text-slate-500">
+                <div className="flex flex-1 pl-4">
+                    <Link href="/" className="hover:text-amber-400 transition-colors">Voltar</Link>
+                </div>
+
                 <a href="#" className="hover:text-amber-400 transition-colors">Privacidade</a>
                 <a href="#" className="hover:text-amber-400 transition-colors">Termos</a>
                 <a href="#" className="hover:text-amber-400 transition-colors">Cookies</a>
