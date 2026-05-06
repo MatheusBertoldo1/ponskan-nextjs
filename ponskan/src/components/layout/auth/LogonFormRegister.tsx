@@ -1,23 +1,23 @@
 'use client'
 
-import { LogoCurrentColor } from "@/assets/icons/LogoCurrentColor";
+import { LogoCurrentColor } from "@/assets/icons/LogoCurrentColor"
 import { Button } from "@/components/ui/Button"
-import { InputText } from "@/components/ui/InputText";
-import { ProgressBar } from "@/components/ui/ProgressBar";
-import { DateMask, PhoneMask } from "@/utils/masks";
-import { motion, AnimatePresence } from "framer-motion";
+import { InputText } from "@/components/ui/InputText"
+import { ProgressBar } from "@/components/ui/ProgressBar"
+import { DateMask, PhoneMask } from "@/utils/masks"
+import { motion, AnimatePresence } from "framer-motion"
 import { useState, useEffect } from "react";
-import { api } from "@/services/api";
 import { useForm, FormProvider } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { api } from "@/services/api"
 import { z } from "zod";
 
-const registerSchema = z.object({
+const zodSchemaBase = z.object({
     firstName: z.string().min(1, "Nome é obrigatório").max(50, "Nome muito grande").refine(val => !/[^a-zA-ZÀ-ÿ\s]/.test(val), "Contem caracteres proibidos").trim(),
     lastName: z.string().min(1, "Sobrenome é obrigatório").max(50, "Nome muito grande").refine(val => !/[^a-zA-ZÀ-ÿ\s]/.test(val), "Contem caracteres proibidos").trim(),
 
     birthDate: z.string()
-        .min(1, "Data de nascimento é obrigatória").transform(val => val.replace(/-/g, "/")) // Padroniza para /
+        .min(1, "Data de nascimento é obrigatória")
         .refine(val => /^\d{2}\/\d{2}\/\d{4}$/.test(val), "Formato Inválido")
         .transform(val => {
             const [dia, mes, ano] = val.split("/");
@@ -33,7 +33,7 @@ const registerSchema = z.object({
 
     mail: z.email("Email inválido").min(1, "E-mail é obrigatório").max(100, "Email muito grande").trim(),
 
-    address: z.string().min(1, "Endereço é obrigatório").max(255, "Endereço muito grande").refine(val => !/[^a-zA-ZÀ-ÿ]/.test(val), "Contem caracteres proibidos").trim(),
+    address: z.string().min(1, "Endereço é obrigatório").max(255, "Endereço muito grande").refine(val => !/[^a-zA-ZÀ-ÿ0-9]/.test(val), "Contem caracteres proibidos").trim(),
 
     phone: z.string()
         .min(1, "Telefone é obrigatório")
@@ -50,8 +50,8 @@ const registerSchema = z.object({
         .refine((val) => val.length === 0 || val.length === 14, "CNPJ deve ter 14 dígitos"),
 
     isStudent: z.boolean(),
-    school: z.string().max(100, "Nome da escola é muito grande").refine(val => !/[^a-zA-ZÀ-ÿ\s]/.test(val), "Contem caracteres proibidos").trim().optional().or(z.literal("")),
-    course: z.string().max(100, "Nome do curso é muito grande").refine(val => !/[^a-zA-ZÀ-ÿ\s]/.test(val), "Contem caracteres proibidos").trim().optional().or(z.literal("")),
+    school: z.string().max(100, "Nome da escola é muito grande").refine(val => !/[^a-zA-ZÀ-ÿ\s]/.test(val), "Contem caracteres proibidos").trim().or(z.literal("")),
+    course: z.string().max(100, "Nome do curso é muito grande").refine(val => !/[^a-zA-ZÀ-ÿ\s]/.test(val), "Contem caracteres proibidos").trim().or(z.literal("")),
 
     password: z.string().min(8, "A senha deve ter no mínimo 8 caracteres")
         .refine((val) => /[A-Z]/.test(val), "Deve conter ao menos uma letra maiúscula")
@@ -60,16 +60,23 @@ const registerSchema = z.object({
 
     confirmPassword: z.string().min(6, "Confirmação é obrigatória").trim()
 
-}).refine((data) => data.password === data.confirmPassword, {
+})
+
+const zodSchemaFull = zodSchemaBase.refine((data) => data.password === data.confirmPassword, { // Validar igualdade de senha (front-end)
     message: "As senhas não coincidem",
     path: ["confirmPassword"],
-});
+})
 
-// Extrair o type do objeto zod
-type RegisterFormData = z.infer<typeof registerSchema>;
+const zodSchemaAPI = zodSchemaBase.omit({ // Schema limpo para API
+    confirmPassword: true,
+    isStudent: true
+}).extend({
+    birthDate: z.string() // Aceita a string como ela estiver - evitar erro de revalidação
+})
 
-// Definir o formato e os dados que são aceitos nas etapas do formulário
-type Step = {
+type RegisterFormData = z.infer<typeof zodSchemaFull> // Extrair o type do objeto zod
+
+type Step = { // Definir o formato os dados do formulário
     title: string,
     fields: (keyof RegisterFormData)[]
 }
@@ -104,50 +111,38 @@ const FORM_STEPS: Step[] = [
 
 // --------- Formulário de registro multi-etapas  --------------
 export const LogonFormRegister = () => {
-    // Contador de etapas - baseado na quantidade de estapas de FORM_STEPS
-    const maxRange = FORM_STEPS.length - 1
+    const maxRange = FORM_STEPS.length - 1 // Contador de etapas - baseado na quantidade de estapas de FORM_STEPS
     const [stage, setStage] = useState(0)
 
-    // Estado de validação doformulário
-    const [isSubmiting, setIsSubmiting] = useState(false)
+    const [isSubmiting, setIsSubmiting] = useState(false) // Estado de validação doformulário
 
     // atribuindo todos os metodos de useForm para methods (usado em FormProvides) 
-    // // shouldUnregister: false -> para os dados não sumirem em formularios multi-etapas
     const methods = useForm<RegisterFormData>(
         {
-            shouldUnregister: false,
-            resolver: zodResolver(registerSchema),
-            mode: "all"
+            shouldUnregister: false, // Persistir dados ao desmontar componente
+            resolver: zodResolver(zodSchemaFull), // Aplica as regras definidas no schema
+            mode: "onBlur"
         }
     )
 
-    // Extraindo métodos específicos do useForm
-    const { handleSubmit, trigger, register, watch, setValue, clearErrors, formState: { errors } } = methods
+    const { handleSubmit, trigger, register, watch, setValue, clearErrors, formState: { errors, touchedFields } } = methods  // Extraindo métodos específicos do useForm
 
-    // Verificando checkbox se é estudante
-    const isStudent = watch("isStudent")
+    const isStudent = watch("isStudent") // Acompanha checkbox isStudent
 
+    // Apaga os valores no estado do formulário
     useEffect(() => {
         if (!isStudent) {
-            // Apaga os valores no estado do formulário
-            setValue("school", "");
-            setValue("course", "");
-
-            // Remove as mensagens de erro que podem ter ficado "presas"
-            clearErrors(["school", "course"]);
+            setValue("school", "")
+            setValue("course", "")
+            clearErrors(["school", "course", "password", "confirmPassword"])
         }
     }, [isStudent, setValue, clearErrors]);
 
     // Incrementa valor no contador
     const increaseValue = async () => {
-        // Guardar os campos do estágio atual
-        let inputTextsForm = FORM_STEPS[stage].fields
+        let inputTextsForm = FORM_STEPS[stage].fields // Guardar os campos do estágio atual
 
-        // Verificação se os campos existem
-        if (!inputTextsForm) {
-            console.log("Campos não existem")
-            return false
-        }
+        if (!inputTextsForm) return false // Verificação se os campos existem
 
         let isValid = await trigger(inputTextsForm) // Validação dos campos e retornando true/false 
 
@@ -165,36 +160,34 @@ export const LogonFormRegister = () => {
             e.preventDefault();
 
             // Tira o foco do input atual para forçar o RHF a registrar o valor
-            if (document.activeElement instanceof HTMLElement) {
-                document.activeElement.blur();
-            }
+            if (document.activeElement instanceof HTMLElement) document.activeElement.blur()
 
             // Espera um "frame" para o React processar o blur e chama a função
             requestAnimationFrame(() => {
-                if (stage < maxRange) {
-                    increaseValue();
-                }
-            });
+                if (stage < maxRange) increaseValue()
+            })
         }
     }
 
-    // Método que roda ao dar submit
-    const onSubmit = async (data: any) => {
+    // Submeter à API
+    const onSubmit = async (data: RegisterFormData) => {
+        setIsSubmiting(true)
+        const payload = zodSchemaAPI.parse(data) // Filtrando os campos que serão enviados à API (runtime)
 
         try {
-            const response = await api.post('/users/register', data)
-            setIsSubmiting(true)
-            
+            const response = await api.post('/users/register', payload)
+
             if (response.status === 201) {
                 alert("Conta criada com sucesso!")
             }
-        } catch (error: any) {
+        } 
+        catch (error: any) {
             const errorMessage = error.response?.data?.message || "Erro ao conectar com o servidor.";
             alert(`Falha no cadastro: ${errorMessage}`);
+        } 
+        finally {
+            setIsSubmiting(false)
         }
-
-        alert("Enviando dados:")
-        console.log("Enviando dados:", data)
     }
 
     return (
@@ -264,8 +257,8 @@ export const LogonFormRegister = () => {
 
                                     {/* STAGE 5 */}
                                     <div className="flex flex-col flex-1">
-                                        <InputText {...register("password")} visible={stage === 5} type="password" inputId="password" textLabel="Senha" error={stage === 5 ? errors.password?.message : undefined} />
-                                        <InputText {...register("confirmPassword")} visible={stage === 5} type="password" inputId="confirmPassword" textLabel="Confirmar senha" error={errors.confirmPassword?.message} />
+                                        <InputText {...register("password")} visible={stage === 5} type="password" inputId="password" textLabel="Senha" error={stage === 5 && touchedFields.password ? errors.password?.message : undefined} />
+                                        <InputText {...register("confirmPassword")} visible={stage === 5} type="password" inputId="confirmPassword" textLabel="Confirmar senha" error={stage === 5 && touchedFields.password? errors.confirmPassword?.message : undefined} />
                                     </div>
                                 </motion.div>
                             </AnimatePresence>
