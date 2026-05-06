@@ -10,75 +10,11 @@ import { useState, useEffect } from "react";
 import { useForm, FormProvider } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { api } from "@/services/api"
-import { z } from "zod";
-
-const zodSchemaBase = z.object({
-    firstName: z.string().min(1, "Nome é obrigatório").max(50, "Nome muito grande").refine(val => !/[^a-zA-ZÀ-ÿ\s]/.test(val), "Contem caracteres proibidos").trim(),
-    lastName: z.string().min(1, "Sobrenome é obrigatório").max(50, "Nome muito grande").refine(val => !/[^a-zA-ZÀ-ÿ\s]/.test(val), "Contem caracteres proibidos").trim(),
-
-    birthDate: z.string()
-        .min(1, "Data de nascimento é obrigatória")
-        .refine(val => /^\d{2}\/\d{2}\/\d{4}$/.test(val), "Formato Inválido")
-        .transform(val => {
-            const [dia, mes, ano] = val.split("/");
-            return `${ano}-${mes}-${dia}`; // Converte para formato ISO (AAAA-MM-DD)
-        })
-        .pipe(
-            z.string().refine(val => {
-                const date = new Date(val);
-                // Verifica se é uma data válida e se não é no futuro
-                return !isNaN(date.getTime()) && date <= new Date();
-            }, "Data inválida ou no futuro")
-        ),
-
-    mail: z.email("Email inválido").min(1, "E-mail é obrigatório").max(100, "Email muito grande").trim(),
-
-    address: z.string().min(1, "Endereço é obrigatório").max(255, "Endereço muito grande").refine(val => !/[^a-zA-ZÀ-ÿ0-9]/.test(val), "Contem caracteres proibidos").trim(),
-
-    phone: z.string()
-        .min(1, "Telefone é obrigatório")
-        .transform((val) => val.replace(/[^\d]/g, ""))
-        .pipe(
-            z.string()
-                .min(10, "Mínimo 10 dígitos")
-                .max(11, "Máximo 11 dígitos")
-        ),
-
-    // CNPJ: se for vazio aceita, se tiver algo tem que ter 14
-    cnpj: z.string()
-        .transform((val) => val.replace(/[^\d]/g, ""))
-        .refine((val) => val.length === 0 || val.length === 14, "CNPJ deve ter 14 dígitos"),
-
-    isStudent: z.boolean(),
-    school: z.string().max(100, "Nome da escola é muito grande").refine(val => !/[^a-zA-ZÀ-ÿ\s]/.test(val), "Contem caracteres proibidos").trim().or(z.literal("")),
-    course: z.string().max(100, "Nome do curso é muito grande").refine(val => !/[^a-zA-ZÀ-ÿ\s]/.test(val), "Contem caracteres proibidos").trim().or(z.literal("")),
-
-    password: z.string().min(8, "A senha deve ter no mínimo 8 caracteres")
-        .refine((val) => /[A-Z]/.test(val), "Deve conter ao menos uma letra maiúscula")
-        .refine((val) => /[0-9]/.test(val), "Deve conter ao menos um número")
-        .refine((val) => /[^a-zA-Z0-9]/.test(val), "Deve conter ao menos um caractere especial"),
-
-    confirmPassword: z.string().min(6, "Confirmação é obrigatória").trim()
-
-})
-
-const zodSchemaFull = zodSchemaBase.refine((data) => data.password === data.confirmPassword, { // Validar igualdade de senha (front-end)
-    message: "As senhas não coincidem",
-    path: ["confirmPassword"],
-})
-
-const zodSchemaAPI = zodSchemaBase.omit({ // Schema limpo para API
-    confirmPassword: true,
-    isStudent: true
-}).extend({
-    birthDate: z.string() // Aceita a string como ela estiver - evitar erro de revalidação
-})
-
-type RegisterFormData = z.infer<typeof zodSchemaFull> // Extrair o type do objeto zod
+import { signUpSchema, SignUpData } from "@/schemas/auth"
 
 type Step = { // Definir o formato os dados do formulário
     title: string,
-    fields: (keyof RegisterFormData)[]
+    fields: (keyof SignUpData)[]
 }
 
 // Definir titulo e nome dos InputTexts de cada estágio do formulário
@@ -109,18 +45,19 @@ const FORM_STEPS: Step[] = [
     },
 ]
 
-// --------- Formulário de registro multi-etapas  --------------
-export const LogonFormRegister = () => {
-    const maxRange = FORM_STEPS.length - 1 // Contador de etapas - baseado na quantidade de estapas de FORM_STEPS
-    const [stage, setStage] = useState(0)
+// Define quantidade de passos
+const maxRange = FORM_STEPS.length - 1  
 
+// --------- Formulário de registro multi-etapas  --------------
+export const SignupForm = () => {
+    const [stage, setStage] = useState(0) // Contador de etapas
     const [isSubmiting, setIsSubmiting] = useState(false) // Estado de validação doformulário
 
     // atribuindo todos os metodos de useForm para methods (usado em FormProvides) 
-    const methods = useForm<RegisterFormData>(
+    const methods = useForm<SignUpData>(
         {
             shouldUnregister: false, // Persistir dados ao desmontar componente
-            resolver: zodResolver(zodSchemaFull), // Aplica as regras definidas no schema
+            resolver: zodResolver(signUpSchema), // Aplica as regras definidas no schema
             mode: "onBlur"
         }
     )
@@ -170,9 +107,8 @@ export const LogonFormRegister = () => {
     }
 
     // Submeter à API
-    const onSubmit = async (data: RegisterFormData) => {
+    const onSubmit = async (data: SignUpData) => {
         setIsSubmiting(true)
-        const payload = zodSchemaAPI.parse(data) // Filtrando os campos que serão enviados à API (runtime)
 
         try {
             const response = await api.post('/users/register', payload)
@@ -182,7 +118,7 @@ export const LogonFormRegister = () => {
             }
         } 
         catch (error: any) {
-            const errorMessage = error.response?.data?.message || "Erro ao conectar com o servidor.";
+            const errorMessage: string = error.response?.data?.message || "Erro ao conectar com o servidor.";
             alert(`Falha no cadastro: ${errorMessage}`);
         } 
         finally {

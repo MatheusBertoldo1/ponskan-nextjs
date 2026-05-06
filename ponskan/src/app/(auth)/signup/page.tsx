@@ -1,4 +1,4 @@
-import { LogonFormRegister } from "@/components/layout/auth/LogonFormRegister"
+import { SignupForm } from "@/components/layout/auth/SignupForm"
 import Link from "next/link"
 
 export default function Logon() {
@@ -7,7 +7,7 @@ export default function Logon() {
     return (
         <div className="flex flex-col min-h-115 h-fit w-full max-w-200 font-lexend select-none">
             {/* Formulário */}
-            <LogonFormRegister />
+            <SignupForm />
 
             {/* Termos   */}
             <div className="flex justify-end gap-4 pt-4 pr-4 font-inter text-sm text-slate-500">
