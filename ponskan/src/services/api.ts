@@ -3,5 +3,6 @@ import axios from "axios"
 const baseURL = 'http://localhost:3000/'
 
 export const api = axios.create({
-    baseURL: baseURL, 
+    baseURL: baseURL,
+    withCredentials: true // Navegador anexa os cookies automaticamente nas requisições 
 })

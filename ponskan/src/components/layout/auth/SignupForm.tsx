@@ -6,11 +6,13 @@ import { InputText } from "@/components/ui/InputText"
 import { ProgressBar } from "@/components/ui/ProgressBar"
 import { DateMask, PhoneMask } from "@/utils/masks"
 import { motion, AnimatePresence } from "framer-motion"
-import { useState, useEffect } from "react";
-import { useForm, FormProvider } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { api } from "@/services/api"
+import { useState, useEffect } from "react"
+import { useForm, FormProvider } from "react-hook-form"
+import { zodResolver } from "@hookform/resolvers/zod"
 import { signUpSchema, SignUpData } from "@/schemas/auth"
+import { registerUser } from "@/services/registerUser"
+import { saveSession } from "@/actions/session"
+import Router from "next/router"
 
 type Step = { // Definir o formato os dados do formulário
     title: string,
@@ -46,7 +48,7 @@ const FORM_STEPS: Step[] = [
 ]
 
 // Define quantidade de passos
-const maxRange = FORM_STEPS.length - 1  
+const maxRange = FORM_STEPS.length - 1
 
 // --------- Formulário de registro multi-etapas  --------------
 export const SignupForm = () => {
@@ -110,18 +112,16 @@ export const SignupForm = () => {
     const onSubmit = async (data: SignUpData) => {
         setIsSubmiting(true)
 
-        try {
-            const response = await api.post('/users/register', payload)
+        const response = await registerUser(data)
 
-            if (response.status === 201) {
-                alert("Conta criada com sucesso!")
-            }
-        } 
-        catch (error: any) {
-            const errorMessage: string = error.response?.data?.message || "Erro ao conectar com o servidor.";
-            alert(`Falha no cadastro: ${errorMessage}`);
-        } 
-        finally {
+        if (response.success) {
+            setIsSubmiting(false)
+
+            await saveSession(response.token) // Salvar o token
+
+            Router.push('/dashboard')
+        } else {
+            response.message
             setIsSubmiting(false)
         }
     }
@@ -194,7 +194,7 @@ export const SignupForm = () => {
                                     {/* STAGE 5 */}
                                     <div className="flex flex-col flex-1">
                                         <InputText {...register("password")} visible={stage === 5} type="password" inputId="password" textLabel="Senha" error={stage === 5 && touchedFields.password ? errors.password?.message : undefined} />
-                                        <InputText {...register("confirmPassword")} visible={stage === 5} type="password" inputId="confirmPassword" textLabel="Confirmar senha" error={stage === 5 && touchedFields.password? errors.confirmPassword?.message : undefined} />
+                                        <InputText {...register("confirmPassword")} visible={stage === 5} type="password" inputId="confirmPassword" textLabel="Confirmar senha" error={stage === 5 && touchedFields.password ? errors.confirmPassword?.message : undefined} />
                                     </div>
                                 </motion.div>
                             </AnimatePresence>
