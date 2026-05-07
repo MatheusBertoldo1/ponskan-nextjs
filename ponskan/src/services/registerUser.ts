@@ -1,5 +1,5 @@
 import { api } from "./api"
-import { SignUpData } from "@/schemas/auth"
+import { SignUpData } from "@/schemas/signUp"
 
 export const registerUser = async (data: SignUpData) => {
     const { confirmPassword, isStudent, ...payload } = data // Filtrando os campos que serão enviados à API 

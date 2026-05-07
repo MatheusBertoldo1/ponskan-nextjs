@@ -7,41 +7,39 @@ import { AnimatePresence, motion } from "framer-motion";
 import Link from "next/link";
 import { useForm } from "react-hook-form";
 import { useState } from "react";
-import z from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { api } from "@/services/api";
-
-const login_schema = z.object({
-    email: z.email("Email inválido").min(1, "E-mail é obrigatório").max(100, "Email muito grande").trim(),
-    password: z.string().min(1, "Senha é obrigatório")
-})
-
-type LoginFormData = z.infer<typeof login_schema>
+import { loginUser } from "@/services/loginUser";
+import { saveSession } from "@/actions/session";
+import { loginSchema, LoginData } from "@/schemas/login";
+import Router from "next/router";
 
 // Login
 export default function Login() {
     const [isSubmiting, setIsSubmiting] = useState(false)
 
-    const methods = useForm<LoginFormData>({
+    const methods = useForm<LoginData>({
         mode: "onBlur",
-        resolver: zodResolver(login_schema)
+        resolver: zodResolver(loginSchema)
     })
 
-    const { handleSubmit, register, formState: { errors }} = methods
+    const { handleSubmit, register, formState: { errors } } = methods
 
-    const onSubmit = async (data: any) => {
+    const onSubmit = async (data: LoginData) => {
         setIsSubmiting(true)
 
-        try{
-            const response = await api.get("/login", data)
+        const response = await loginUser(data)
 
-            if(response.status === 201 ){
-                console.log("ok")
-            }
-        } catch (error) {
-            console.log(error)
+        if (response.success) {
+            setIsSubmiting(false)
+
+            await saveSession(response.token)
+            
+            Router.push('www.google.com')
+        } else {
+            alert(response.message)
         }
     }
+
     return (
         <div className="flex flex-col w-full max-w-200 font-lexend select-none">
             <div className="flex p-10 bg-slate-50 rounded-3xl">
@@ -60,14 +58,14 @@ export default function Login() {
                                 exit={{ opacity: 0, x: -20 }}   // Sai para a esquerda
                                 transition={{ duration: 0.3 }}
                             >
-                                <InputText {...register("email")} inputId="email" textLabel="Email" visible error={errors.email?.message}/>
-                                <InputText {...register("password")} type="password" inputId="senha" textLabel="Senha" visible error={errors.password?.message}/>
+                                <InputText {...register("email")} inputId="email" textLabel="Email" visible error={errors.email?.message} />
+                                <InputText {...register("password")} type="password" inputId="senha" textLabel="Senha" visible error={errors.password?.message} />
                             </motion.div>
                         </AnimatePresence>
                         <Button type="submit" className="self-end" variant={isSubmiting ? "disabled" : "primary"}>{isSubmiting ? "Acessando..." : "Acessar conta"}</Button>
                     </form>
                     <p className="text-center mt-6 text-sm text-slate-500">
-                        Ainda não possui uma conta? <a href="/logon" className="text-amber-500 font-bold hover:underline">Crie agora.</a>
+                        Ainda não possui uma conta? <a href="/signup" className="text-amber-500 font-bold hover:underline">Crie agora.</a>
                     </p>
                 </div>
             </div>

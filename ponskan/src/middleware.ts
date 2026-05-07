@@ -4,7 +4,7 @@ import type { NextRequest } from 'next/server'
 
 export function middleware(request: NextRequest) {
   // No Middleware, pegamos o cookie direto do objeto da requisição
-  const token = request.cookies.get('ponskan.token')?.value
+  const token = request.cookies.get('token')?.value
 
   const isDashboardPage = request.nextUrl.pathname.startsWith('/dashboard')
 
