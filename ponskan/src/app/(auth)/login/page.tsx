@@ -65,7 +65,7 @@ export default function Login() {
                                 <InputText {...register("password")} type="password" inputId="senha" textLabel="Senha" visible error={errors.password?.message} />
                             </motion.div>
                         </AnimatePresence>
-                        <Button type="submit" className="self-end" variant={isSubmiting ? "disabled" : "primary"}>{isSubmiting ? "Acessando..." : "Acessar conta"}</Button>
+                        <Button type="submit" className="self-end" variant={isSubmiting ? "ghost" : "default"}>{isSubmiting ? "Acessando..." : "Acessar conta"}</Button>
                     </form>
                     <p className="text-center mt-6 text-sm text-slate-500">
                         Ainda não possui uma conta? <a href="/signup" className="text-amber-500 font-bold hover:underline">Crie agora.</a>

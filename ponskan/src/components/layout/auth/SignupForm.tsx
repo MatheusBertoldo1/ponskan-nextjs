@@ -202,13 +202,13 @@ export const SignupForm = () => {
                         </div>
 
                         <div className="flex flex-1 items-end w-full">
-                            <Button type="button" onClick={decreaseValue} variant={stage > 0 ? "secondary" : "disabled"}>Voltar</Button>
+                            <Button type="button" onClick={decreaseValue} variant={stage > 0 ? "secondary" : "ghost"}>Voltar</Button>
 
                             {
                                 stage == maxRange ?
-                                    <Button type="submit" className="ml-auto" variant={isSubmiting ? "disabled" : "primary"}>{isSubmiting ? "Enviando" : "Criar conta"}</Button>
+                                    <Button type="submit" className="ml-auto" variant={isSubmiting ? "ghost" : "default"}>{isSubmiting ? "Enviando" : "Criar conta"}</Button>
                                     :
-                                    <Button type="button" onClick={increaseValue} className="ml-auto" variant="primary">Avançar</Button>
+                                    <Button type="button" onClick={increaseValue} className="ml-auto" variant="default">Avançar</Button>
                             }
                         </div>
                     </form>
