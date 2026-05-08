@@ -2,9 +2,9 @@
 import { NextResponse } from 'next/server'
 import type { NextRequest } from 'next/server'
 
-export function middleware(request: NextRequest) {
+export function proxy(request: NextRequest) {
   // No Middleware, pegamos o cookie direto do objeto da requisição
-  const token = request.cookies.get('token')?.value
+  const token = request.cookies.get('tokenPonskan')?.value
 
   const isDashboardPage = request.nextUrl.pathname.startsWith('/dashboard')
 

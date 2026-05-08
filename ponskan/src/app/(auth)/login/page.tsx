@@ -11,10 +11,12 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { loginUser } from "@/services/loginUser";
 import { saveSession } from "@/actions/session";
 import { loginSchema, LoginData } from "@/schemas/login";
-import Router from "next/router";
+import { useRouter } from "next/navigation";
 
 // Login
 export default function Login() {
+    const Router = useRouter()
+
     const [isSubmiting, setIsSubmiting] = useState(false)
 
     const methods = useForm<LoginData>({
@@ -33,8 +35,9 @@ export default function Login() {
             setIsSubmiting(false)
 
             await saveSession(response.token)
+            // await saveSession("fakeToken")
             
-            Router.push('www.google.com')
+            Router.push('/dashboard')
         } else {
             alert(response.message)
         }

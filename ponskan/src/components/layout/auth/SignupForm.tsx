@@ -12,7 +12,7 @@ import { zodResolver } from "@hookform/resolvers/zod"
 import { signUpSchema, SignUpData } from "@/schemas/signUp"
 import { registerUser } from "@/services/registerUser"
 import { saveSession } from "@/actions/session"
-import Router from "next/router"
+import { useRouter } from "next/navigation"
 
 type Step = { // Definir o formato os dados do formulário
     title: string,
@@ -27,7 +27,7 @@ const FORM_STEPS: Step[] = [
     },
     {
         title: "Data de nascimento",
-        fields: ["mail", "phone"],
+        fields: ["email", "phone"],
     },
     {
         title: "Localização e contato",
@@ -39,7 +39,7 @@ const FORM_STEPS: Step[] = [
     },
     {
         title: "Você é um estudante?",
-        fields: ["school", "course"],
+        fields: ["highSchool", "course"],
     },
     {
         title: "Defina sua senha",
@@ -52,6 +52,7 @@ const maxRange = FORM_STEPS.length - 1
 
 // --------- Formulário de registro multi-etapas  --------------
 export const SignupForm = () => {
+    const Router = useRouter()
     const [stage, setStage] = useState(0) // Contador de etapas
     const [isSubmiting, setIsSubmiting] = useState(false) // Estado de validação doformulário
 
@@ -71,9 +72,9 @@ export const SignupForm = () => {
     // Apaga os valores no estado do formulário
     useEffect(() => {
         if (!isStudent) {
-            setValue("school", "")
+            setValue("highSchool", "")
             setValue("course", "")
-            clearErrors(["school", "course", "password", "confirmPassword"])
+            clearErrors(["highSchool", "course", "password", "confirmPassword"])
         }
     }, [isStudent, setValue, clearErrors]);
 
@@ -121,7 +122,7 @@ export const SignupForm = () => {
 
             Router.push('/dashboard')
         } else {
-            response.message
+            //console.log(response.message)
             setIsSubmiting(false)
         }
     }
@@ -154,7 +155,7 @@ export const SignupForm = () => {
                                     <InputText {...register("lastName")} visible={stage === 0} inputId="lastName" textLabel="Sobrenome" error={errors.lastName?.message} />
 
                                     {/* STAGE 1 */}
-                                    <InputText {...register("mail")} visible={stage === 1} inputId="mail" textLabel="Email" error={errors.mail?.message} />
+                                    <InputText {...register("email")} visible={stage === 1} inputId="email" textLabel="Email" error={errors.email?.message} />
                                     <InputText {...register("phone")} visible={stage === 1} inputId="phone" textLabel="Telefone" error={errors.phone?.message}
                                         onChange={
                                             (e) => {
@@ -186,7 +187,7 @@ export const SignupForm = () => {
                                         </div>
 
                                         <div style={{ maxHeight: isStudent ? '300px' : '0px', opacity: isStudent ? '1' : '0' }} className={`flex pt-2 flex-col overflow-hidden transition-all duration-300`}>
-                                            <InputText {...register("school")} visible={stage === 4} inputId="school" textLabel="Nome da instituição" error={errors.school?.message} />
+                                            <InputText {...register("highSchool")} visible={stage === 4} inputId="highSchool" textLabel="Nome da instituição" error={errors.highSchool?.message} />
                                             <InputText {...register("course")} visible={stage === 4} inputId="course" textLabel="Nome do curso" error={errors.course?.message} />
                                         </div>
                                     </div>

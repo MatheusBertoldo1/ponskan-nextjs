@@ -20,7 +20,7 @@ export const signUpSchema = z.object({
             }, "Data inválida ou no futuro")
         ),
 
-    mail: z.email("Email inválido").min(1, "E-mail é obrigatório").max(100, "Email muito grande").trim(),
+    email: z.email("Email inválido").min(1, "E-mail é obrigatório").max(100, "Email muito grande").trim(),
 
     address: z.string().min(1, "Endereço é obrigatório").max(255, "Endereço muito grande").refine(val => !/[^a-zA-ZÀ-ÿ0-9]/.test(val), "Contem caracteres proibidos").trim(),
 
@@ -39,7 +39,7 @@ export const signUpSchema = z.object({
         .refine((val) => val.length === 0 || val.length === 14, "CNPJ deve ter 14 dígitos"),
 
     isStudent: z.boolean(),
-    school: z.string().max(100, "Nome da escola é muito grande").refine(val => !/[^a-zA-ZÀ-ÿ\s]/.test(val), "Contem caracteres proibidos").trim().or(z.literal("")),
+    highSchool: z.string().max(100, "Nome da escola é muito grande").refine(val => !/[^a-zA-ZÀ-ÿ\s]/.test(val), "Contem caracteres proibidos").trim().or(z.literal("")),
     course: z.string().max(100, "Nome do curso é muito grande").refine(val => !/[^a-zA-ZÀ-ÿ\s]/.test(val), "Contem caracteres proibidos").trim().or(z.literal("")),
 
     password: z.string().min(8, "A senha deve ter no mínimo 8 caracteres")
