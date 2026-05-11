@@ -1,6 +1,13 @@
 export const LogoCurrentColor = ({ className }: { className?: string }) => {
   return (
-    <svg width="24" height="33" viewBox="0 0 24 33" className={className} fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+    <svg 
+      viewBox="0 0 24 33" 
+      className={className} 
+      fill="currentColor" 
+      xmlns="http://www.w3.org/2000/svg"
+      width="100%" 
+      height="100%"
+      >
         <path d="M18.8759 13.2112C18.2982 13.5322 20.2519 16.7041 21.2045 16.2807C21.8396 15.8574 19.6168 12.7996 18.8759 13.2112Z" fill="currentColor"/>
         <path d="M6.91531 30.8346C7.15191 29.8291 11.3609 29.4586 12.0489 31.258C12.2605 33.6925 6.49192 32.634 6.91531 30.8346Z" fill="currentColor"/>
         <path d="M1.35838 26.7595C0.882076 27.1259 3.26361 30.3583 3.73992 29.8291C4.21623 29.5645 2.04638 26.2303 1.35838 26.7595Z" fill="currentColor"/>
