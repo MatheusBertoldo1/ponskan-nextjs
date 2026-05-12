@@ -49,7 +49,7 @@ export default function Page() {
     <div>
       <Header />
 
-      <div className="flex p-6 gap-6">
+      <div className="flex p-6 gap-6 flex-wrap">
         <KPI description="Fotos analizadas" percent={7.5} value={96} period="Últimos 7 dias" trend="increasing" />
         <KPI description="Doença confirmada" percent={7.5} value={5} period="Últimos 7 dias" trend="increasing" />
         <KPI description="Focos de contaminação" percent={7.5} value={2} period="Últimos 7 dias" trend="stable" reverse />
