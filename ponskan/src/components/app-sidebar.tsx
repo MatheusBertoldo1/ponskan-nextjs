@@ -14,7 +14,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
 
   const linksSystem = [
     { title: "Dashboard", url: "/dashboard", icon: Home },
-    { title: "Análises", url: "/analyses", icon: FileText },
+    { title: "Análises", url: "/analysis", icon: FileText },
     { title: "Mapa", url: "/map", icon: Map }
   ]
 
@@ -31,7 +31,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
         </Link>
       </SidebarHeader>
 
-      <SidebarContent>
+      <SidebarContent className="bg-white!">
         <SidebarGroup>
           <SidebarGroupLabel>Sistema</SidebarGroupLabel>
           <SidebarMenu>
@@ -42,7 +42,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
                 return (
                   <SidebarMenuItem key={index}>
                     <SidebarMenuButton size="default" asChild isActive={isActive}>
-                      <Link href="/dashboard">
+                      <Link href={item.url}>
                         <div hidden={!isActive} className="w-1 h-full rounded-2xl bg-primary"></div>
                         <item.icon/> 
                         {item.title}
@@ -89,7 +89,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
         </SidebarGroup>
       </SidebarContent>
 
-      <SidebarFooter>
+      <SidebarFooter className="bg-white!">
         <SidebarGroup>
           <SidebarMenu>
             <SidebarMenuItem>

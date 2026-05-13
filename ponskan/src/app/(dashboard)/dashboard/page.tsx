@@ -1,25 +1,10 @@
 "use client"
+
 import { Header } from "@/components/layout/dashboard/Header"
-import { usePathname } from "next/navigation"
 import { KPI } from "@/components/layout/dashboard/KPI"
 import { Bar, BarChart, CartesianGrid, XAxis } from "recharts"
-
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardFooter,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card"
-import {
-  ChartContainer,
-  ChartLegend,
-  ChartLegendContent,
-  ChartTooltip,
-  ChartTooltipContent,
-  type ChartConfig,
-} from "@/components/ui/chart"
+import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle, } from "@/components/ui/card"
+import { ChartContainer, ChartLegend, ChartLegendContent, ChartTooltip, ChartTooltipContent, type ChartConfig, } from "@/components/ui/chart"
 
 const chartData = [
   { day: "Segunda", analise: 186, doenca: 80 },
@@ -43,13 +28,11 @@ const chartConfig = {
 }
 
 export default function Page() {
-  const path = usePathname()
-
   return (
-    <div>
+    <div className="min-h-full ">
       <Header />
 
-      <div className="flex p-6 gap-6 flex-wrap">
+      <div className="flex px-6 pt-6 pb-4 gap-4 flex-wrap">
         <KPI description="Fotos analizadas" percent={7.5} value={96} period="Últimos 7 dias" trend="increasing" />
         <KPI description="Doença confirmada" percent={7.5} value={5} period="Últimos 7 dias" trend="increasing" />
         <KPI description="Focos de contaminação" percent={7.5} value={2} period="Últimos 7 dias" trend="stable" reverse />
@@ -57,7 +40,7 @@ export default function Page() {
         <KPI description="Índice de qualidade (%)" percent={1.5} value={89} period="Últimos 7 dias" trend="increasing" />
       </div>
 
-      <div className="flex p-6">
+      <div className="flex pl-6">
         <Card>
           <CardHeader>
             <CardTitle>Análises de frutos</CardTitle>

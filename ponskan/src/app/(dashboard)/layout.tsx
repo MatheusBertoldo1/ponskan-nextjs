@@ -6,11 +6,8 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
         <SidebarProvider>
             <AppSidebar />
 
-            <SidebarInset>
-                
-                <div className="flex flex-1 flex-col gap-4">
-                    {children}
-                </div>
+            <SidebarInset className="bg-slate-100">
+                {children}
             </SidebarInset>
         </SidebarProvider>
     );
