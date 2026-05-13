@@ -1,7 +1,7 @@
 'use client'
 
 import { LogoCurrentColor } from "@/assets/icons/LogoCurrentColor";
-import { Button } from "@/components/ui/Button"
+import { Button } from "@/components/ui/button"
 import { InputText } from "@/components/ui/InputText";
 import { ProgressBar } from "@/components/ui/ProgressBar";
 import { DateMask, PhoneMask } from "@/utils/masks";

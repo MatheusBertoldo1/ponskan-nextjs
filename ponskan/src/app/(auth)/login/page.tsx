@@ -1,6 +1,6 @@
 'use client'
 
-import { Button } from "@/components/ui/Button"
+import { Button } from "@/components/ui/button"
 import Link from "next/link";
 import { useForm } from "react-hook-form";
 import { ControllerRenderProps } from "react-hook-form"

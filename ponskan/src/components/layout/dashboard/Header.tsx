@@ -2,7 +2,7 @@ import { SidebarTrigger } from "@/components/ui/sidebar"
 import { Separator } from "@/components/ui/separator"
 import { usePathname } from "next/navigation"
 import { ButtonGroup, ButtonGroupText } from "@/components/ui/button-group"
-import { Button } from "@/components/ui/Button"
+import { Button } from "@/components/ui/button"
 import { Calendar, FileText } from "lucide-react"
 import { Select, SelectTrigger, SelectContent, SelectItem, SelectValue } from "@/components/ui/select"
 
