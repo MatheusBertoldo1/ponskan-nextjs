@@ -88,12 +88,13 @@ const FormLabel = React.forwardRef<
   React.ElementRef<typeof LabelPrimitive.Root>,
   React.ComponentPropsWithoutRef<typeof LabelPrimitive.Root>
 >(({ className, ...props }, ref) => {
-  const { error, formItemId } = useFormField()
+  const { error, formItemId, isTouched } = useFormField()
+  const getError = error && isTouched
 
   return (
     <Label
       ref={ref}
-      className={cn(error && "text-destructive", className)}
+      className={cn(getError && "text-destructive", className)}
       htmlFor={formItemId}
       {...props}
     />
@@ -105,7 +106,8 @@ const FormControl = React.forwardRef<
   React.ElementRef<typeof Slot>,
   React.ComponentPropsWithoutRef<typeof Slot>
 >(({ ...props }, ref) => {
-  const { error, formItemId, formDescriptionId, formMessageId } = useFormField()
+  const { error, formItemId, formDescriptionId, formMessageId, isTouched } = useFormField()
+  const showError = !!error && isTouched
 
   return (
     <Slot
@@ -116,7 +118,7 @@ const FormControl = React.forwardRef<
           ? `${formDescriptionId}`
           : `${formDescriptionId} ${formMessageId}`
       }
-      aria-invalid={!!error}
+      aria-invalid={showError}
       {...props}
     />
   )
@@ -144,10 +146,10 @@ const FormMessage = React.forwardRef<
   HTMLParagraphElement,
   React.HTMLAttributes<HTMLParagraphElement>
 >(({ className, children, ...props }, ref) => {
-  const { error, formMessageId } = useFormField()
+  const { error, formMessageId, isTouched } = useFormField()
   const body = error ? String(error?.message) : children
 
-  if (!body) {
+  if (!body || !isTouched ) {
     return null
   }
 
