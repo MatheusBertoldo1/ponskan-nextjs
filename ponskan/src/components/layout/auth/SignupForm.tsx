@@ -13,7 +13,7 @@ import { useState, useEffect } from "react"
 import { useForm } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { signUpSchema, SignUpData } from "@/schemas/signUp"
-import { registerUser } from "@/services/registerUser"
+import { createUser } from "@/services/user"
 import { saveSession } from "@/actions/session"
 import { useRouter } from "next/navigation"
 import Link from "next/link"
@@ -74,10 +74,11 @@ export const SignupForm = () => {
     }
 
     const onSubmit = async (data: SignUpData) => {
-        const response = await registerUser(data)
-        if (response.success) {
+        const response = await createUser(data)
+        
+        if (response.success && response.token != undefined) {
             const success = await saveSession(response.token)
-            success && router.push('/dashboard')
+            success && router.push('/app')
         } else {
             console.log(response.message)
         }

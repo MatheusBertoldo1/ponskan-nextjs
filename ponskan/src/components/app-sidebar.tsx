@@ -8,19 +8,20 @@ import { Sidebar, SidebarContent, SidebarGroup, SidebarHeader, SidebarMenu, Side
 import { DropdownMenu, DropdownMenuTrigger, DropdownMenuContent, DropdownMenuGroup, DropdownMenuItem, DropdownMenuSeparator } from "./ui/dropdown-menu"
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar"
 import { usePathname } from "next/navigation"
+import { deleteSession } from "@/actions/session"
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   const path = usePathname()
 
   const linksSystem = [
-    { title: "Dashboard", url: "/dashboard", icon: Home },
-    { title: "Análises", url: "/analysis", icon: FileText },
-    { title: "Mapa", url: "/map", icon: Map }
+    { title: "Dashboard", url: "/app", icon: Home },
+    { title: "Análises", url: "/app/analysis", icon: FileText },
+    { title: "Mapa", url: "/app/map", icon: Map }
   ]
 
   const linksConfig = [
-    { title: "Configurações", url: "/config", icon: Cog },
-    { title: "Ajuda e suporte", url: "/help", icon: MessageCircleQuestionIcon },
+    { title: "Configurações", url: "/app/config", icon: Cog },
+    { title: "Ajuda e suporte", url: "/app/help", icon: MessageCircleQuestionIcon },
   ]
 
   return (
@@ -118,7 +119,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
                     <DropdownMenuSeparator />
 
                     <DropdownMenuItem asChild>
-                      <Link href="/"><LogOut /> Sair da conta</Link>
+                      <Link href="/" onClick={deleteSession}><LogOut /> Sair da conta</Link>
                     </DropdownMenuItem>
                   </DropdownMenuGroup>
                 </DropdownMenuContent>

@@ -1,19 +1,26 @@
+'use server'
+
 import { api } from "./api"
 
-const UploapImagesForAnalysis = async (file: File[]) => {
+const UploapImagesForAnalysis = async (file: FormData) => {
     try {
-        const response = await api.post("/analysis", file)
+        const response = await api.post("/analysis", file, {
+            headers: {
+                "Content-Type": "multipart/form-data",
+            }
+        })
 
+        console.log(response)
         return {
             success: true,
-            message: response.data?.message,
-            status: response.data?.status
+            message: JSON.stringify(response.data?.message),
+            status: JSON.stringify(response.data?.status)
         }
     } catch(error: any) {
         return {
             success: false,
-            message: error.response?.data?.message || "Erro ao fazer upload",
-            status: error.response?.data?.status || "500"
+            message: JSON.stringify(error.response?.data?.message) || "Erro ao fazer upload",
+            status: error.response?.data?.status
         }
     }
 }

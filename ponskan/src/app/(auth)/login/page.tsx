@@ -5,7 +5,7 @@ import Link from "next/link";
 import { useForm } from "react-hook-form";
 import { ControllerRenderProps } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod";
-import { loginUser } from "@/services/loginUser";
+import { loginUser } from "@/services/user";
 import { saveSession } from "@/actions/session";
 import { loginSchema, LoginData } from "@/schemas/login";
 import { useRouter } from "next/navigation";
@@ -33,7 +33,8 @@ export default function Login() {
 
         if (response.success) {
             await saveSession(response.token)
-            router.push('/dashboard')
+            alert(response.message)
+            router.push('/app')
         } else {
             alert(response.message)
         }

@@ -9,35 +9,36 @@ import { useState } from "react"
 import { ChangeEvent } from "react"
 import { ProgressBar } from "@/components/ui/ProgressBar"
 import { UploapImagesForAnalysis } from "@/services/uploadFile"
+import { image } from "framer-motion/client"
 
 export default function Page() {
     const maxImages = 3 // => 4
     const [images, setImages] = useState<(File)[]>([])
     const [isSubmiting, setIsSubmiting] = useState(false)
     const [isOpen, setIsOpen] = useState(false) // Alterar o comportamento do Dialog
+    const imagesToFormData = new FormData()
 
     const keepFiles = (e: ChangeEvent<HTMLInputElement>) => {
         const file = e.target.files?.[0]
-
         if (!file || images.length > maxImages) return
-
         setImages(prev => [...prev, file]) // Pega o ultimo estado e add file
-
         e.target.value = "" // Limpa valor do input -> não puxar a mesma imagem
     }
 
     const submitFiles = async () => {
         setIsSubmiting(true)
+        images.map((file) => {
+            imagesToFormData.append("files", file)
+        })
+        const response = await UploapImagesForAnalysis(imagesToFormData)
 
-        const response = await UploapImagesForAnalysis(images)
-
-        if (response.status === 201) {
-            window.alert("Deu certo")
+        if (response.success) {
+            alert("Deu bom" + response.status)
             setIsSubmiting(false)
         } else {
-            window.alert("Ó rri vel")
+            alert("Deu ruim" + response.status)
             setIsSubmiting(false)
-            clearFileAndClose()
+            // clearFileAndClose()
         }
     }
 
@@ -49,7 +50,6 @@ export default function Page() {
     return (
         <>
             <Header />
-
             <div className="flex justify-center items-center w-full h-full">
                 <Dialog open={isOpen} onOpenChange={setIsOpen}>
                     <DialogTrigger asChild>
@@ -63,7 +63,6 @@ export default function Page() {
                             <DialogTitle>Fazer upload de imagens</DialogTitle>
                         </DialogHeader>
                         <DialogDescription>Escolha 4 imagens de posições diferentes do mesmo fruto ou folha</DialogDescription>
-
 
                         <div className="w-full h-fit flex flex-col items-center gap-4 p-6 border-2 border-dashed border-chart-1 rounded-lg bg-slate-50 ">
                             <Button asChild className="flex" variant={images.length <= maxImages ? "default" : "ghost"} >
@@ -93,8 +92,6 @@ export default function Page() {
                                 {images[3] && <Image fill src={URL.createObjectURL(images[3])} alt="" />}
                             </div>
                         </div>
-
-
 
                         <Button
                             variant={images.length - 1 == maxImages && !isSubmiting ? "default" : "ghost"}
