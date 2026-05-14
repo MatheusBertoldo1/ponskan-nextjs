@@ -15,7 +15,7 @@ export const registerUser = async (data: SignUpData) => {
 
         return {        
             success: true,
-            token: response.data.token,
+            token: response.data?.token,
             message: response.data?.message || "Usuário criado com sucesso"
         }
     } catch (error: any) {
