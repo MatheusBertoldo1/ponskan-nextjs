@@ -9,7 +9,6 @@ import { useState } from "react"
 import { ChangeEvent } from "react"
 import { ProgressBar } from "@/components/ui/ProgressBar"
 import { UploapImagesForAnalysis } from "@/services/uploadFile"
-import { image } from "framer-motion/client"
 
 export default function Page() {
     const maxImages = 3 // => 4
@@ -28,17 +27,16 @@ export default function Page() {
     const submitFiles = async () => {
         setIsSubmiting(true)
         images.map((file) => {
-            imagesToFormData.append("files", file)
+            imagesToFormData.append("images", file)
         })
         const response = await UploapImagesForAnalysis(imagesToFormData)
 
         if (response.success) {
             alert("Deu bom" + response.status)
-            setIsSubmiting(false)
+            clearFileAndClose()
         } else {
             alert("Deu ruim" + response.status)
-            setIsSubmiting(false)
-            // clearFileAndClose()
+            clearFileAndClose()
         }
     }
 

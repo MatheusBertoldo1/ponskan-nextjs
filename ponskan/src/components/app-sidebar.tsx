@@ -26,8 +26,8 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
 
   return (
     <Sidebar {...props} className="select-none">
-      <SidebarHeader>
-        <Link href="/dashboard">
+      <SidebarHeader className="bg-white">
+        <Link href="/app">
           <LogoCurrentColor className="size-8!" />
         </Link>
       </SidebarHeader>
@@ -76,7 +76,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
                 return (
                   <SidebarMenuItem key={index}>
                     <SidebarMenuButton size="default" asChild isActive={isActive}>
-                      <Link href="/dashboard">
+                      <Link href={item.url}>
                         <div hidden={!isActive} className="w-1 h-full rounded-2xl bg-primary"></div>
                         <item.icon/> 
                         {item.title}
@@ -109,11 +109,11 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
                 <DropdownMenuContent align="end">
                   <DropdownMenuGroup>
                     <DropdownMenuItem asChild>
-                      <Link href="/account"><User /> Minha conta</Link>
+                      <Link href="/app/account"><User /> Minha conta</Link>
                     </DropdownMenuItem>
 
                     <DropdownMenuItem asChild>
-                      <Link href="/notification"><Bell /> Notificações</Link>
+                      <Link href="/app/notification"><Bell /> Notificações</Link>
                     </DropdownMenuItem>
 
                     <DropdownMenuSeparator />

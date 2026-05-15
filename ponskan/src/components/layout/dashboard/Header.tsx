@@ -36,7 +36,6 @@ export const Header = () => {
 
       <div className="flex flex-1 justify-end gap-4 pr-4">
         <ButtonGroup>
-          <ButtonGroupText><Calendar /> Data atual - 15, abril, 2026</ButtonGroupText>
           <Select>
             <SelectTrigger>
               <SelectValue placeholder="Últimos 7 dias" />
@@ -54,7 +53,7 @@ export const Header = () => {
             </SelectContent>
           </Select>
         </ButtonGroup>
-        <Button><FileText /> Exportar para PDF</Button>
+        <Button disabled variant="default"><FileText /> Exportar <span className="hidden md:visible">para PDF</span></Button>
       </div>
     </header>
   )
