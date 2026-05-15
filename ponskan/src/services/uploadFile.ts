@@ -1,5 +1,4 @@
 'use server'
-
 import { api } from "./api"
 
 const UploapImagesForAnalysis = async (file: FormData) => {
@@ -10,17 +9,18 @@ const UploapImagesForAnalysis = async (file: FormData) => {
             }
         })
 
-        console.log(response)
+        const res = response.data // encurtar o chamado
         return {
-            success: true,
-            message: JSON.stringify(response.data?.message),
-            status: JSON.stringify(response.data?.status)
+            success: res?.success as boolean,
+            status: res?.status,
+            message: res?.message as string,
+            data: res?.data // createdAt, id, id_usuario, status, updatedAt
         }
     } catch(error: any) {
         return {
             success: false,
             message: JSON.stringify(error.response?.data?.message) || "Erro ao fazer upload",
-            status: error.response?.data?.status
+            status: error.res?.status
         }
     }
 }

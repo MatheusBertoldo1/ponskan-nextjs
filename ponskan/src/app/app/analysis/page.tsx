@@ -9,6 +9,7 @@ import { useState } from "react"
 import { ChangeEvent } from "react"
 import { ProgressBar } from "@/components/ui/ProgressBar"
 import { UploapImagesForAnalysis } from "@/services/uploadFile"
+import { requestPooling } from "@/services/requestProcesses"
 
 export default function Page() {
     const maxImages = 3 // => 4
@@ -30,13 +31,16 @@ export default function Page() {
             imagesToFormData.append("images", file)
         })
         const response = await UploapImagesForAnalysis(imagesToFormData)
-
+        
         if (response.success) {
-            alert("Deu bom" + response.status)
             clearFileAndClose()
+            setIsSubmiting(false)
+
+            const resposta = await requestPooling(response.data?.id)
+            alert("Resposta: " + JSON.stringify(resposta?.response.message))
         } else {
-            alert("Deu ruim" + response.status)
             clearFileAndClose()
+            setIsSubmiting(false)
         }
     }
 
