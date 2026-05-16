@@ -5,8 +5,7 @@ import { cn } from "@/lib/utils";
 
 const geist = Geist({subsets:['latin'],variable:'--font-sans'});
 
-
-// URL base do domínio
+// URL base do domínio (não usado ainda)
 const BASE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://www.ponskan.com.br';
 
 const lexendSans = Lexend({

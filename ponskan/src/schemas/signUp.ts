@@ -22,7 +22,7 @@ export const signUpSchema = z.object({
 
     email: z.email("Email inválido").min(1, "E-mail é obrigatório").max(100, "Email muito grande").trim(),
 
-    address: z.string().min(1, "Endereço é obrigatório").max(255, "Endereço muito grande").refine(val => !/[^a-zA-ZÀ-ÿ0-9]/.test(val), "Contem caracteres proibidos").trim(),
+    address: z.string().min(1, "Endereço é obrigatório").max(255, "Endereço muito grande").refine(val => !/[^a-zA-ZÀ-ÿ0-9\s]/.test(val), "Contem caracteres proibidos").trim(),
 
     phone: z.string()
         .min(1, "Telefone é obrigatório")

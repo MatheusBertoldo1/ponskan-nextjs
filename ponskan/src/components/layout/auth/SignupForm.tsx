@@ -77,10 +77,16 @@ export const SignupForm = () => {
         const response = await createUser(data)
         
         if (response.success && response.token != undefined) {
-            const success = await saveSession(response.token)
-            success && router.push('/app')
+            await saveSession({
+                token: response.token, 
+                name: response.user?.name, 
+                email: response.user?.email, 
+                userId: response.user.id
+            })
+
+            router.push('/app')
         } else {
-            console.log(response.message)
+            alert(response.message)
         }
     }
 

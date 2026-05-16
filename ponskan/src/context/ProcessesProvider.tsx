@@ -5,7 +5,7 @@ import { api } from '@/services/api';
 interface ProcessContextData {
   analysisResult: boolean; 
   isAnalyzing: boolean;
-  startMonitoring: (id: number) => void;
+  startMonitoring: (id: string) => void;
 }
 
 // Contexto com uso da interface
@@ -19,10 +19,10 @@ interface ProcessProviderProps {
 export function ProcessProvider({ children }: ProcessProviderProps) {
   const [analysisResult, setAnalysisResult] = useState<any>(null);
   const [isAnalyzing, setIsAnalyzing] = useState<boolean>(false);
-  const [currentId, setCurrentId] = useState< number | null>(null);
+  const [currentId, setCurrentId] = useState< string | null>(null);
 
   // Tipamos o parâmetro 'id'
-  const checkStatus = useCallback(async (id: number) => {
+  const checkStatus = useCallback(async (id: string) => {
     try {
       const response = await api.get(`/analysis/${id}`);
       
@@ -51,7 +51,7 @@ export function ProcessProvider({ children }: ProcessProviderProps) {
   }, [isAnalyzing, currentId, checkStatus]);
 
   // Tipamos a função de disparar o monitoramento
-  const startMonitoring = (id: number) => {
+  const startMonitoring = (id: string) => {
     setCurrentId(id);
     setIsAnalyzing(true);
   }

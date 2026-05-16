@@ -1,7 +1,7 @@
 "use client"
 
-import { Header } from "@/components/layout/dashboard/Header"
-import { KPI } from "@/components/layout/dashboard/KPI"
+import { Header } from "@/components/layout/app/Header"
+import { KPI } from "@/components/layout/app/KPI"
 import { Bar, BarChart, CartesianGrid, XAxis } from "recharts"
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle, } from "@/components/ui/card"
 import { ChartContainer, ChartLegend, ChartLegendContent, ChartTooltip, ChartTooltipContent, type ChartConfig, } from "@/components/ui/chart"

@@ -1,5 +1,7 @@
 export default function Page () {
     return(
-        <>Ajuda</>
+        <section className="flex flex-1 items-center justify-center">
+            <p className="font-semibold">Página de ajuda será lançada em breve</p>
+        </section>
     )
 }

@@ -11,13 +11,13 @@ const namePage = () => {
   let pageName
 
   switch (path){
-    case "/dashboard":
+    case "/":
       pageName = "Dashboard"
       break
-    case "/analysis":
+    case "/app/analysis":
       pageName = "Análises"
       break
-    case "/map":
+    case "/app/map":
       pageName = "Mapa"
       break
     default:

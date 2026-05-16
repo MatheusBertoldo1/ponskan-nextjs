@@ -5,12 +5,16 @@ import * as React from "react"
 import Link from "next/link"
 import { LogoCurrentColor } from "@/assets/icons/LogoCurrentColor"
 import { Sidebar, SidebarContent, SidebarGroup, SidebarHeader, SidebarMenu, SidebarMenuButton, SidebarMenuItem, SidebarFooter, SidebarGroupLabel } from "@/components/ui/sidebar"
-import { DropdownMenu, DropdownMenuTrigger, DropdownMenuContent, DropdownMenuGroup, DropdownMenuItem, DropdownMenuSeparator } from "./ui/dropdown-menu"
+import { DropdownMenu, DropdownMenuTrigger, DropdownMenuContent, DropdownMenuGroup, DropdownMenuItem, DropdownMenuSeparator } from "../../ui/dropdown-menu"
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar"
 import { usePathname } from "next/navigation"
 import { deleteSession } from "@/actions/session"
+import Cookie from "js-cookie"
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
+  const userCookie = Cookie.get('userPonskan') // Pegar o Cookie
+  const userData = userCookie ? JSON.parse(userCookie) : null // Verifica se não é null
+
   const path = usePathname()
 
   const linksSystem = [
@@ -34,7 +38,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
 
       <SidebarContent className="bg-white!">
         <SidebarGroup>
-          <SidebarGroupLabel>Sistema</SidebarGroupLabel>
+          <SidebarGroupLabel>Sistema </SidebarGroupLabel>
           <SidebarMenu>
             {
               linksSystem.map((item, index) => {
@@ -102,7 +106,10 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
                       <AvatarFallback>US</AvatarFallback>
                     </Avatar>
 
-                    <p>Name User</p>
+                    <div className="flex flex-col">
+                      <p className="font-semibold">{userData.name}</p>
+                      <p className="font-light">{userData.email}</p>
+                    </div>
                   </SidebarMenuButton>
                 </DropdownMenuTrigger>
 

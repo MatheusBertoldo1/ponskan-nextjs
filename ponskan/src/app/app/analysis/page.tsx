@@ -1,15 +1,17 @@
 'use client'
 
-import { Header } from "@/components/layout/dashboard/Header"
+import { Header } from "@/components/layout/app/Header"
 import { Button } from "@/components/ui/button"
-import { Dialog, DialogContent, DialogTitle, DialogTrigger, DialogHeader, DialogDescription, DialogClose } from "@/components/ui/dialog"
+import { Dialog, DialogContent, DialogTitle, DialogTrigger, DialogHeader, DialogDescription, } from "@/components/ui/dialog"
 import Image from "next/image"
-import { Upload } from "lucide-react"
+import { Upload, ArrowUpFromLine, SearchIcon } from "lucide-react"
 import { useState } from "react"
 import { ChangeEvent } from "react"
 import { ProgressBar } from "@/components/ui/ProgressBar"
 import { UploapImagesForAnalysis } from "@/services/uploadFile"
 import { requestPooling } from "@/services/requestProcesses"
+import { DataTable } from "@/components/layout/app/DataTable"
+import { requestAllAnalysis } from "@/services/requestData"
 
 export default function Page() {
     const maxImages = 3 // => 4
@@ -27,16 +29,16 @@ export default function Page() {
 
     const submitFiles = async () => {
         setIsSubmiting(true)
-        images.map((file) => {
+        images.map((file) => { // pega as imagens e salva na variavel imagesToFormData / = formData() /
             imagesToFormData.append("images", file)
         })
-        const response = await UploapImagesForAnalysis(imagesToFormData)
+        const response = await UploapImagesForAnalysis(imagesToFormData) // Função para mandar imgs para análise
         
         if (response.success) {
             clearFileAndClose()
             setIsSubmiting(false)
 
-            const resposta = await requestPooling(response.data?.id)
+            const resposta = await requestPooling(response.data?.id) // Requisição do processo de Polling
             alert("Resposta: " + JSON.stringify(resposta?.response.message))
         } else {
             clearFileAndClose()
@@ -49,13 +51,19 @@ export default function Page() {
         setIsOpen(false)
     }
 
+    const ReqAllAnalysis = async () => {
+        const res = await requestAllAnalysis(1)
+
+        alert(res.message)
+    }
+
     return (
         <>
             <Header />
-            <div className="flex justify-center items-center w-full h-full">
+            <div className="flex flex-col p-8 w-full h-full gap-6">
                 <Dialog open={isOpen} onOpenChange={setIsOpen}>
-                    <DialogTrigger asChild>
-                        <Button>Fazer upload de imagem</Button>
+                    <DialogTrigger className="w-fit" asChild>
+                        <Button><ArrowUpFromLine /> Enviar imagens para análise</Button>
                     </DialogTrigger>
 
                     <DialogContent className="overflow-hidden">
@@ -69,12 +77,12 @@ export default function Page() {
                         <div className="w-full h-fit flex flex-col items-center gap-4 p-6 border-2 border-dashed border-chart-1 rounded-lg bg-slate-50 ">
                             <Button asChild className="flex" variant={images.length <= maxImages ? "default" : "ghost"} >
                                 <label htmlFor="file1" className="gap-3" >
-                                    <Upload className="w-5" />Upload
+                                    <SearchIcon className="w-5" />Procurar neste computador
                                 </label>
                             </Button>
 
                             <input onChange={keepFiles} type="file" accept="image/*" name="file1" id="file1" className="hidden" disabled={images.length <= maxImages ? false : true} />
-                            <p className="text-chart-3 text-center">JPG, JPEG, PNG. Max 5mb </p>
+                            <p className="text-chart-3 text-center">JPG, JPEG, PNG. Max 5mb. </p>
                         </div>
 
                         <div className="w-full h-20 flex justify-between gap-2">
@@ -104,6 +112,8 @@ export default function Page() {
                         </Button>
                     </DialogContent>
                 </Dialog>
+
+                <DataTable />
             </div>
         </>
     )

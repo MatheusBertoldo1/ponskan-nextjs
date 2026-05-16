@@ -32,8 +32,13 @@ export default function Login() {
         const response = await loginUser(data)
 
         if (response.success) {
-            await saveSession(response.token)
-            alert(response.message)
+            await saveSession({
+                token: response.token, 
+                name: response.user?.name, 
+                email: response.user?.email, 
+                userId: response.user?.id
+            })
+
             router.push('/app')
         } else {
             alert(response.message)

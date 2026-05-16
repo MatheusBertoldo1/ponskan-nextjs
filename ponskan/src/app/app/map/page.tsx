@@ -1,5 +1,7 @@
 export default function Page () {
     return(
-        <>Map</>
+        <section className="flex flex-1 items-center justify-center">
+            <p className="font-semibold">Página de Mapa será lançada em breve</p>
+        </section>
     )
 }
