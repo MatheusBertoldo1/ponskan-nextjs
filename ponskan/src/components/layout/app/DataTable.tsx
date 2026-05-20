@@ -1,11 +1,11 @@
 "use client"
 
-import * as React from "react"
-import { flexRender, getCoreRowModel, getPaginationRowModel, useReactTable, type ColumnDef, } from "@tanstack/react-table"
-import { ChevronLeft, ChevronRight } from "lucide-react"
+import { useEffect, useState, } from "react"
+import { flexRender, getCoreRowModel, useReactTable, type ColumnDef, } from "@tanstack/react-table"
+import { ChevronLeft, ChevronRight, RefreshCcwIcon } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow, } from "@/components/ui/table"
-import { requestAllAnalysis } from "@/services/requestData"
+import { requestAnalyses } from "@/services/requestAnalyses"
 
 // 1. Definição simples das colunas (Exemplo com ID e Título)
 const columns: ColumnDef<any>[] = [
@@ -22,49 +22,64 @@ const columns: ColumnDef<any>[] = [
         header: "Imagens",
     },
     {
-        accessorKey: "classificacao.classe",
+        accessorKey: "classe",
         header: "Doença",
     },
     {
-        accessorKey: "classificacao.confianca",
+        accessorKey: "confianca",
         header: "Confiança",
     },
     {
-        accessorKey: "classificacao.tempo_execucao",
+        accessorKey: "tempo_execucao",
         header: "Tempo de execução",
     },
     {
-        accessorKey: "classificacao.createdAt",
+        accessorKey: "createdAt",
         header: "Data",
     },
 ]
 
 export function DataTable() {
-    const [data, setData] = React.useState<any[]>([])
-    const [loading, setLoading] = React.useState(true)
+    const [data, setData] = useState<any[]>([])
+    const [loading, setLoading] = useState(true)
 
     // Estado apenas para controlar o índice da página (começa na 0)
-    const [pagination, setPagination] = React.useState({
+    const [pagination, setPagination] = useState({
         pageIndex: 0,
         pageSize: 20, // <--- NÚMERO FIXO DE ELEMENTOS POR TELA
     })
 
-    React.useEffect(() => {
-        async function carregarDadosDaAPI() {
-            try {
-                const response = await requestAllAnalysis(pagination.pageIndex > 0 ? pagination.pageIndex : 1)
-                const res = response.data
 
-                // Salvando dados pegos da API
-                setData(response.data || []) 
-            } catch (error) {
-                console.error("Erro ao buscar dados da API:", error)
-            } finally {
-                setLoading(false)
+    const carregarDadosDaAPI = async () => {
+        try {
+            const response = await requestAnalyses(pagination.pageIndex > 0 ? pagination.pageIndex : 1)
+
+            let filterResponse
+            // Filtrando os dados da API para melhor exibição no front
+            if (response.success) {
+                filterResponse = response.data.map(item => {
+                    return {
+                        id: item.id.slice(0, 4),
+                        status: item.status,
+                        imagesCount: item.imagesCount.toString(),
+                        confianca: `${(item.classificacao.confianca * 100).toString()}%`,
+                        classe: item.classificacao.classe == "true" ? "Detectado" : "Não detectado",
+                        tempo_execucao: `${(item.classificacao.tempo_execucao / 1000).toFixed(2)} sec`,
+                        createdAt: (item.classificacao.createdAt).slice(0,10).replace(/(\d{4})-(\d{2})-(\d{2})/, '$3/$2/$1')
+                    }
+                })
             }
+
+            // Salvando dados pegos da API
+            setData(filterResponse || [])
+        } catch (error) {
+            console.error("Erro ao buscar dados da API:", error)
+        } finally {
+            setLoading(false)
         }
-        carregarDadosDaAPI()
-    }, [])
+    }
+
+    useEffect(() => { carregarDadosDaAPI() }, []) // Buscar os dados da API ao montar o componente
 
     const table = useReactTable({
         data,
@@ -74,7 +89,6 @@ export function DataTable() {
         },
         onPaginationChange: setPagination,
         getCoreRowModel: getCoreRowModel(),
-        getPaginationRowModel: getPaginationRowModel(), // Garante a quebra de páginas
     })
 
     return (
@@ -117,11 +131,14 @@ export function DataTable() {
 
             {/* 3. Controles Simples de Paginação */}
             <div className="flex items-center justify-end gap-4 px-2">
+                <div className="flex-1">
+                    <Button variant="outline" onClick={carregarDadosDaAPI}><RefreshCcwIcon /> Atualizar</Button>
+                </div>
                 <div className="text-sm font-medium">
                     Página {table.getState().pagination.pageIndex + 1} de {table.getPageCount()}
                 </div>
                 <div className="flex items-center gap-2">
-                    <Button
+                    <Button // Botão de voltar página
                         variant="outline"
                         size="icon"
                         className="size-8"
@@ -130,7 +147,7 @@ export function DataTable() {
                     >
                         <ChevronLeft className="size-4" />
                     </Button>
-                    <Button
+                    <Button // Botão de avançar página
                         variant="outline"
                         size="icon"
                         className="size-8"

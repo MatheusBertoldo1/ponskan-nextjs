@@ -5,9 +5,9 @@ import { useState } from "react"
 import { ArrowUpFromLine, SearchIcon } from "lucide-react"
 import Image from "next/image"
 import { ChangeEvent } from "react"
-import { requestAllAnalysis } from "@/services/requestData"
-import { UploapImagesForAnalysis } from "@/services/uploadFile"
-import { requestPooling } from "@/services/requestProcesses"
+import { requestAnalyses } from "@/services/requestAnalyses"
+import { uploapImagesForAnalyse } from "@/services/uploadFileForAnalyse"
+import { requestPooling } from "@/services/requestPooling"
 import { ProgressBar } from "@/components/ui/ProgressBar"
 
 export const DialogUploadImagesForAnalysis = () => {
@@ -29,7 +29,7 @@ export const DialogUploadImagesForAnalysis = () => {
         images.map((file) => { // pega as imagens e salva na variavel imagesToFormData / = formData() /
             imagesToFormData.append("images", file)
         })
-        const response = await UploapImagesForAnalysis(imagesToFormData) // Função para mandar imgs para análise
+        const response = await uploapImagesForAnalyse(imagesToFormData) // Função para mandar imgs para análise
         
         if (response.success) {
             clearFileAndClose()
@@ -49,7 +49,7 @@ export const DialogUploadImagesForAnalysis = () => {
     }
 
     const ReqAllAnalysis = async () => {
-        const res = await requestAllAnalysis(1)
+        const res = await requestAnalyses(1)
 
         alert(res.message)
     }

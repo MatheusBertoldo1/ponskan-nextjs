@@ -2,6 +2,10 @@
 
 import { api } from "./api";
 
+interface Pooling {
+  
+}
+
 export const requestPooling = async (id: string) => {
   if (!id) return { success: false }
 
