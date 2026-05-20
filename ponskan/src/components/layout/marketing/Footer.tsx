@@ -14,7 +14,7 @@ export const Footer = () => {
 
             <div className="flex w-full items-center px-4">
                 <p className="text-slate-500">© 2026 Ponskan. Todos os direitos reservados.</p>
-                <LogoCurrentColor className="ml-auto text-slate-700"/>
+                <LogoCurrentColor className="ml-auto w-5 text-slate-700"/>
             </div>
         </footer>
         </>

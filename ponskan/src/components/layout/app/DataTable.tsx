@@ -1,25 +1,10 @@
 "use client"
 
 import * as React from "react"
-import {
-    flexRender,
-    getCoreRowModel,
-    getPaginationRowModel,
-    useReactTable,
-    type ColumnDef,
-} from "@tanstack/react-table"
+import { flexRender, getCoreRowModel, getPaginationRowModel, useReactTable, type ColumnDef, } from "@tanstack/react-table"
 import { ChevronLeft, ChevronRight } from "lucide-react"
-
 import { Button } from "@/components/ui/button"
-import {
-    Table,
-    TableBody,
-    TableCell,
-    TableHead,
-    TableHeader,
-    TableRow,
-} from "@/components/ui/table"
-
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow, } from "@/components/ui/table"
 import { requestAllAnalysis } from "@/services/requestData"
 
 // 1. Definição simples das colunas (Exemplo com ID e Título)
@@ -34,11 +19,11 @@ const columns: ColumnDef<any>[] = [
     },
     {
         accessorKey: "imagesCount",
-        header: "Quantidade de imagens",
+        header: "Imagens",
     },
     {
         accessorKey: "classificacao.classe",
-        header: "Doença detectada",
+        header: "Doença",
     },
     {
         accessorKey: "classificacao.confianca",
@@ -50,7 +35,7 @@ const columns: ColumnDef<any>[] = [
     },
     {
         accessorKey: "classificacao.createdAt",
-        header: "Data de criação",
+        header: "Data",
     },
 ]
 
@@ -61,16 +46,16 @@ export function DataTable() {
     // Estado apenas para controlar o índice da página (começa na 0)
     const [pagination, setPagination] = React.useState({
         pageIndex: 0,
-        pageSize: 20, // <--- NÚMERO FIXO DE ELEMENTOS POR TELA AQUI
+        pageSize: 20, // <--- NÚMERO FIXO DE ELEMENTOS POR TELA
     })
 
     React.useEffect(() => {
         async function carregarDadosDaAPI() {
             try {
                 const response = await requestAllAnalysis(pagination.pageIndex > 0 ? pagination.pageIndex : 1)
-                
-                // Se sua função já retorna o array direto, use assim. 
-                // Se ela retornar o objeto do Axios, pode ser necessário usar 'response.data'
+                const res = response.data
+
+                // Salvando dados pegos da API
                 setData(response.data || []) 
             } catch (error) {
                 console.error("Erro ao buscar dados da API:", error)
@@ -78,7 +63,6 @@ export function DataTable() {
                 setLoading(false)
             }
         }
-
         carregarDadosDaAPI()
     }, [])
 
