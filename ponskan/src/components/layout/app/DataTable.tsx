@@ -62,7 +62,7 @@ export function DataTable() {
                         id: item.id.slice(0, 4),
                         status: item.status,
                         imagesCount: item.imagesCount.toString(),
-                        confianca: `${(item.classificacao.confianca * 100).toString()}%`,
+                        confianca: `${(item.classificacao.confianca * 100).toString()}%` || "indeterminado",
                         classe: item.classificacao.classe == "true" ? "Detectado" : "Não detectado",
                         tempo_execucao: `${(item.classificacao.tempo_execucao / 1000).toFixed(2)} sec`,
                         createdAt: (item.classificacao.createdAt).slice(0,10).replace(/(\d{4})-(\d{2})-(\d{2})/, '$3/$2/$1')
@@ -79,7 +79,7 @@ export function DataTable() {
         }
     }
 
-    useEffect(() => { carregarDadosDaAPI() }, []) // Buscar os dados da API ao montar o componente
+    useEffect(() => { carregarDadosDaAPI() }, [pagination.pageIndex]) // Buscar os dados da API ao montar o componente
 
     const table = useReactTable({
         data,
@@ -89,6 +89,7 @@ export function DataTable() {
         },
         onPaginationChange: setPagination,
         getCoreRowModel: getCoreRowModel(),
+        manualPagination: true
     })
 
     return (

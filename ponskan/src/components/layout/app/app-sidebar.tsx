@@ -107,8 +107,8 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
                     </Avatar>
 
                     <div className="flex flex-col">
-                      <p className="font-semibold">{userData.name}</p>
-                      <p className="font-light">{userData.email}</p>
+                      <p className="font-semibold">{/* userData.name */}</p>
+                      <p className="font-light">{/* userData.email */}</p>
                     </div>
                   </SidebarMenuButton>
                 </DropdownMenuTrigger>

@@ -15,7 +15,7 @@ interface UploadImage {
     success: true
     status: number
     message: string
-    data: {UploadImageData : UploadImageData}
+    data: UploadImageData
 } 
 
 interface UploadImageError {
@@ -25,8 +25,8 @@ interface UploadImageError {
     data: {}
 }
 
-const uploapImagesForAnalyse = async (file: FormData) : Promise<UploadImage | UploadImageError> => {
-    if (!file) return {
+const uploapImagesForAnalyse = async (files: FormData) : Promise<UploadImage | UploadImageError> => {
+    if (!files) return {
         success: false,
         status: 400,
         message: "Sem imagens",
@@ -34,7 +34,7 @@ const uploapImagesForAnalyse = async (file: FormData) : Promise<UploadImage | Up
     }
 
     try {
-        const response = await api.post<UploadImage>("/analysis", file, {
+        const response = await api.post<UploadImage>("/analysis", files, {
             headers: { "Content-Type": "multipart/form-data", }
         })
         const res = response.data // encurtar o chamado
